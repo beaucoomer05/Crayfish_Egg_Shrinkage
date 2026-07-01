@@ -5,29 +5,48 @@ format: html
 editor: visual
 ---
 
-## Quarto
-
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
-
-## Running Code
-
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
-
+You always want to load your packages at the top of your script/ document.
 ```{r}
-1 + 1
+library(tidyverse)
 ```
 
-You can add options to executable code like this
+You can have functions from R packages (like `dplyr`), but you can also write R functions yourself. Load the custom function [clean_keyence_csv](custom_functions/clean_keyence_csv.R)...
 
 ```{r}
-#| echo: false
-2 * 2
+# Load clean_keyence_csv()
+source("custom_functions/clean_keyence_csv.R") 
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+Use the function like this...
+
+1. Get your file names 
+  ```{r}
+  file_paths <- list.files(path = "data/raw", pattern = "\\.csv$", full.names = TRUE)
+  ```
+
+2. Process it all into one tibble (similar to data.frame)
+
+  ```{r}
+  compiled_data <- suppressWarnings(
+    file_paths %>%
+      set_names(basename(.)) %>%
+      map(clean_keyence_csv) %>%
+      list_rbind(names_to = "source_file")
+  )
+  ```
+
+Then, you can check out your result like this...
+
+```{r}
+#| eval: false
+View(compiled_data)
+```
+
+
+# Importing Data
+
 ```{r}
 dir_ls(path="data/raw")
 csv_files<-dir_ls(path="data/raw")
 read_csv(csv_files)
 ```
-

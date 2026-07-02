@@ -20,20 +20,21 @@ source("custom_functions/clean_keyence_csv.R")
 Use the function like this...
 
 1. Get your file names 
-  ```{r}
-  file_paths <- list.files(path = "data/raw", pattern = "\\.csv$", full.names = TRUE)
-  ```
+
+```{r}
+file_paths <- list.files(path = "data/raw", pattern = "\\.csv$", full.names = TRUE)
+```
 
 2. Process it all into one tibble (similar to data.frame)
 
-  ```{r}
+```{r}
   compiled_data <- suppressWarnings(
     file_paths %>%
       set_names(basename(.)) %>%
       map(clean_keyence_csv) %>%
       list_rbind(names_to = "source_file")
   )
-  ```
+```
 
 Then, you can check out your result like this...
 

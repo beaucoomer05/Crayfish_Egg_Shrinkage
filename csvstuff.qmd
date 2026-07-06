@@ -14,6 +14,7 @@ You always want to load your packages at the top of your script/ document.
 #| warning: false
 
 library(tidyverse)
+library(readr)
 ```
 
 You can have functions from R packages (like `dplyr`), but you can also write R functions yourself. Load the custom function [clean_keyence_csv](custom_functions/clean_keyence_csv.R)...
@@ -76,6 +77,31 @@ class(tmp$result)
 tmp<-tmp %>%
   mutate(result=as.numeric(result))
 tmp<-tmp %>%
-  rename(egg_diameter_mm=result)
+rename(egg_diameter_mm=result)
+```
+
+```{r}
+tmp <- unite(tmp,treatment,ind_num,col = "treatment_ind_number",sep = "_")
+```
+
+
+```{r}
+body_measures <- read.csv("data/crayfish_body_measurements.csv")
+```
+
+```{r}
+egg_diameter_avgs<-tmp %>%
+  group_by(treatment_ind_number) %>%
+  summarize(avg = mean(egg_diameter_mm))
+
+```
+
+```{r}
+ind_egg_counts<-tmp %>%
+  group_by(treatment_ind_number) %>%
+  summarize(egg_count = n())
+
+ind_egg_counts
+
 ```
 

@@ -3,10 +3,16 @@ title: "newfile2"
 author: "Beau Coomer"
 format: html
 editor: visual
+editor_options: 
+  chunk_output_type: console
 ---
+
+# Importing Data
 
 You always want to load your packages at the top of your script/ document.
 ```{r}
+#| warning: false
+
 library(tidyverse)
 ```
 
@@ -44,10 +50,32 @@ View(compiled_data)
 ```
 
 
-# Importing Data
+# Cleaning Data
+
 
 ```{r}
-dir_ls(path="data/raw")
-csv_files<-dir_ls(path="data/raw")
-read_csv(csv_files)
+clean_csvs<-compiled_data %>%
+  select(!c(Measure,date_saved))
+call("clean_csvs")
 ```
+```{r}
+str_split_fixed(clean_csvs$source_file,"\\-",4)
+```
+```{r}
+clean_csvs<-clean_csvs %>%
+  rename(egg_no=No.) %>%
+  rename_with(tolower)
+```
+```{r}
+tmp<-clean_csvs %>%
+  separate_wider_delim(cols = source_file,delim = "-",names = c("species","treatment","ind_num",NA))
+view(tmp)
+class(tmp$result)
+```
+```{r}
+tmp<-tmp %>%
+  mutate(result=as.numeric(result))
+tmp<-tmp %>%
+  rename(egg_diameter_mm=result)
+```
+

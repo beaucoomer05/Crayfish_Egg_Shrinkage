@@ -10,6 +10,7 @@ editor_options:
 # Importing Data
 
 You always want to load your packages at the top of your script/ document.
+
 ```{r}
 #| warning: false
 
@@ -24,15 +25,17 @@ You can have functions from R packages (like `dplyr`), but you can also write R 
 source("custom_functions/clean_keyence_csv.R") 
 ```
 
-Use the function like this...
+## Dataset 1: Egg Measures
 
-1. Get your file names 
+Use the custom function that was imported like this...
+
+1.  Get your file names
 
 ```{r}
 file_paths <- list.files(path = "data/raw", pattern = "\\.csv$", full.names = TRUE)
 ```
 
-2. Process it all into one tibble (similar to data.frame)
+2.  Process it all into one tibble (similar to data.frame)
 
 ```{r}
   compiled_data <- suppressWarnings(
@@ -50,32 +53,73 @@ Then, you can check out your result like this...
 View(compiled_data)
 ```
 
+## Dataset 2: Body Measures
+
+```{r}
+body_measures <- read.csv("data/crayfish_body_measurements.csv")
+```
 
 # Cleaning Data
 
+First, subset the `compiled_data` object to drop irrelevant columns. The `!` tells `select()` to keep everything *except* the columns listed. 
 
 ```{r}
 clean_csvs<-compiled_data %>%
   select(!c(Measure,date_saved))
-call("clean_csvs")
+
+call("clean_csvs") # What is call() for??? -Emmy
 ```
-```{r}
-str_split_fixed(clean_csvs$source_file,"\\-",4)
-```
+
+It's best practice to have all names in R to be easily type-able. We can accomplish this by...
+
+* No punctuation at the beginning or end of a string
+* Using all lowercase
+
+You can do a direct rename of columns in R by `rename(new_name = old_name)`. If needing to change a bunch of column names, use `rename_with()`.
+
 ```{r}
 clean_csvs<-clean_csvs %>%
   rename(egg_no=No.) %>%
   rename_with(tolower)
 ```
+
+All of the important identifying information is kept in the file names. 
+
 ```{r}
+# One way to split file names into usable chunks...
+str_split_fixed(clean_csvs$source_file,"\\-",4)
+```
+
+```{r}
+# Better way to split the file names into usable chunks + keep the info
+# -- in the data frame
 tmp<-clean_csvs %>%
   separate_wider_delim(cols = source_file,delim = "-",names = c("species","treatment","ind_num",NA))
-view(tmp)
+```
+
+```{r}
+#| eval: false
+View(tmp)
+```
+
+Sometimes R will yell at if the data type isn't appropraite. You can check the data type of anything using `class()`.
+
+```{r}
+# Works on objects
+class(tmp)
+
+# And it can also work on parts of the object
 class(tmp$result)
 ```
+
+
+If the class isn't what it should be, you can fix it on the fly using one of the many `as.___()` functions. Just know that sometimes, it is not going to work and it may not always be appropriate!
+
 ```{r}
 tmp<-tmp %>%
   mutate(result=as.numeric(result))
+
+# "$result" is ambiguous and could be misleading, so rename for clarity
 tmp<-tmp %>%
 rename(egg_diameter_mm=result)
 ```
@@ -84,10 +128,6 @@ rename(egg_diameter_mm=result)
 tmp <- unite(tmp,treatment,ind_num,col = "treatment_ind_number",sep = "_")
 ```
 
-
-```{r}
-body_measures <- read.csv("data/crayfish_body_measurements.csv")
-```
 
 ```{r}
 egg_diameter_avgs<-tmp %>%
@@ -102,6 +142,4 @@ ind_egg_counts<-tmp %>%
   summarize(egg_count = n())
 
 ind_egg_counts
-
 ```
-

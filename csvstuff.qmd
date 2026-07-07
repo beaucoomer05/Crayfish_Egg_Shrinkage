@@ -81,7 +81,7 @@ rename(egg_diameter_mm=result)
 ```
 
 ```{r}
-tmp <- unite(tmp,treatment,ind_num,col = "treatment_ind_number",sep = "_")
+unique_id <- unite(tmp,treatment,ind_num,col = "treatment_ind_number",sep = "_")
 ```
 
 
@@ -90,14 +90,14 @@ body_measures <- read.csv("data/crayfish_body_measurements.csv")
 ```
 
 ```{r}
-egg_diameter_avgs<-tmp %>%
+egg_diameter_avgs<-unique_id %>%
   group_by(treatment_ind_number) %>%
   summarize(avg = mean(egg_diameter_mm))
 
 ```
 
 ```{r}
-ind_egg_counts<-tmp %>%
+ind_egg_counts<-unique_id %>%
   group_by(treatment_ind_number) %>%
   summarize(egg_count = n())
 ```
@@ -106,5 +106,10 @@ ind_egg_counts<-tmp %>%
 View(tmp)
 View(egg_diameter_avgs)
 View(ind_egg_counts)
+view(unique_id)
+```
+
+```{r}
+boxplot(egg_diameter_mm ~ treatment,data = tmp)
 ```
 

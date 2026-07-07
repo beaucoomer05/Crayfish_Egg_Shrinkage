@@ -100,8 +100,11 @@ egg_diameter_avgs<-tmp %>%
 ind_egg_counts<-tmp %>%
   group_by(treatment_ind_number) %>%
   summarize(egg_count = n())
+```
 
-ind_egg_counts
-
+```{r}
+View(tmp)
+View(egg_diameter_avgs)
+View(ind_egg_counts)
 ```
 

@@ -10,6 +10,7 @@ editor_options:
 # Importing Data
 
 You always want to load your packages at the top of your script/ document.
+
 ```{r}
 #| warning: false
 
@@ -26,13 +27,13 @@ source("custom_functions/clean_keyence_csv.R")
 
 Use the function like this...
 
-1. Get your file names 
+1.  Get your file names
 
 ```{r}
 file_paths <- list.files(path = "data/raw", pattern = "\\.csv$", full.names = TRUE)
 ```
 
-2. Process it all into one tibble (similar to data.frame)
+2.  Process it all into one tibble (similar to data.frame)
 
 ```{r}
   compiled_data <- suppressWarnings(
@@ -50,29 +51,31 @@ Then, you can check out your result like this...
 View(compiled_data)
 ```
 
-
 # Cleaning Data
-
 
 ```{r}
 clean_csvs<-compiled_data %>%
   select(!c(Measure,date_saved))
 call("clean_csvs")
 ```
+
 ```{r}
 str_split_fixed(clean_csvs$source_file,"\\-",4)
 ```
+
 ```{r}
 clean_csvs<-clean_csvs %>%
   rename(egg_no=No.) %>%
   rename_with(tolower)
 ```
+
 ```{r}
 tmp<-clean_csvs %>%
   separate_wider_delim(cols = source_file,delim = "-",names = c("species","treatment","ind_num",NA))
 view(tmp)
 class(tmp$result)
 ```
+
 ```{r}
 tmp<-tmp %>%
   mutate(result=as.numeric(result))
@@ -83,7 +86,6 @@ rename(egg_diameter_mm=result)
 ```{r}
 unique_id <- unite(tmp,treatment,ind_num,col = "treatment_ind_number",sep = "_")
 ```
-
 
 ```{r}
 body_measures <- read.csv("data/crayfish_body_measurements.csv")
@@ -112,4 +114,21 @@ view(unique_id)
 ```{r}
 boxplot(egg_diameter_mm ~ treatment,data = tmp)
 ```
+
+```{r}
+treatment_counts<-ind_egg_counts %>%
+  separate_wider_delim(cols = "treatment_ind_number",delim = "_",names = c("treatment","ind_number"))
+treatment_sums<-treatment_counts %>%
+  group_by(treatment) %>%
+  summarize(n = sum(egg_count))
+```
+
+```{r}
+treatment_avgs<-egg_diameter_avgs %>%
+  separate_wider_delim(cols = treatment_ind_number,delim = "_",names = c("treatment","ind_number"))
+treatment_avgsv<-treatment_avgs %>%
+  group_by(treatment) %>%
+  summarize(avg = mean(avg))
+```
+
 

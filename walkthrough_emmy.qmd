@@ -1,0 +1,558 @@
+---
+title: "Data Analysis"
+author: 
+  - name: Beau Coomer
+  - name: Emmy Delekta
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+# Importing Data
+
+You always want to load your packages at the top of your script/ document.
+
+```{r}
+#| warning: false
+
+library(tidyverse)
+library(readr)
+```
+
+You can have functions from R packages (like `dplyr`), but you can also write R functions yourself. Load the custom function [clean_keyence_csv](custom_functions/clean_keyence_csv.R)...
+
+```{r}
+# Load clean_keyence_csv()
+source("custom_functions/clean_keyence_csv.R") 
+```
+
+## Dataset 1: Egg Measures
+
+Use the custom function that was imported like this...
+
+1.  Get your file names
+
+```{r}
+file_paths <- list.files(path = "data/raw", pattern = "\\.csv$", full.names = TRUE)
+```
+
+2.  Process it all into one tibble (similar to data.frame)
+
+```{r}
+  compiled_data <- suppressWarnings(
+    file_paths %>%
+      set_names(basename(.)) %>%
+      map(clean_keyence_csv) %>%
+      list_rbind(names_to = "source_file")
+  )
+```
+
+Then, you can check out your result like this...
+
+```{r}
+#| eval: false
+View(compiled_data)
+```
+
+## Dataset 2: Body Measures
+
+```{r}
+body_measures <- read.csv("data/crayfish_body_measurements.csv")
+```
+
+# Cleaning Data
+
+First, subset the `compiled_data` object to drop irrelevant columns. The `!` tells `select()` to keep everything *except* the columns listed. 
+
+```{r}
+clean_csvs<-compiled_data %>%
+  select(!c(Measure,date_saved))
+
+call("clean_csvs") # What is call() for??? -Emmy
+```
+
+It's best practice to have all names in R to be easily type-able. We can accomplish this by...
+
+* No punctuation at the beginning or end of a string
+* Using all lowercase
+
+You can do a direct rename of columns in R by `rename(new_name = old_name)`. If needing to change a bunch of column names, use `rename_with()`.
+
+```{r}
+clean_csvs<-clean_csvs %>%
+  rename(egg_no=No.) %>%
+  rename_with(tolower)
+```
+
+All of the important identifying information is kept in the file names. 
+
+```{r}
+# One way to split file names into usable chunks...
+str_split_fixed(clean_csvs$source_file,"\\-",4)
+```
+
+```{r}
+# Better way to split the file names into usable chunks + keep the info
+# -- in the data frame
+tmp<-clean_csvs %>%
+  separate_wider_delim(cols = source_file,delim = "-",names = c("species","treatment","ind_num",NA))
+```
+
+```{r}
+#| eval: false
+View(tmp)
+```
+
+Sometimes R will yell at if the data type isn't appropraite. You can check the data type of anything using `class()`.
+
+```{r}
+# Works on objects
+class(tmp)
+
+# And it can also work on parts of the object
+class(tmp$result)
+```
+
+
+If the class isn't what it should be, you can fix it on the fly using one of the many `as.___()` functions. Just know that sometimes, it is not going to work and it may not always be appropriate!
+
+```{r}
+tmp<-tmp %>%
+  mutate(result=as.numeric(result))
+
+# "$result" is ambiguous and could be misleading, so rename for clarity
+tmp<-tmp %>%
+rename(egg_diameter_mm=result)
+```
+
+```{r}
+# Make object to use for summary stats
+df_summaries <- unite(tmp,treatment,ind_num,col = "treatment_ind_number",sep = "_")
+
+# Make data that keeps those columns separate
+df_analysis <- tmp
+```
+
+
+# Summary Statistics
+
+## Average egg diameter
+
+```{r}
+egg_diameter_avgs<-df_summaries %>%
+  group_by(treatment_ind_number) %>%
+  summarize(avg = mean(egg_diameter_mm))
+
+egg_diameter_avgs
+```
+
+## Eggs per individual across treatments
+```{r}
+ind_egg_counts<-df_summaries %>%
+  group_by(treatment_ind_number) %>%
+  summarize(egg_count = n())
+
+ind_egg_counts
+```
+
+# Analysis
+
+## Experimental Design
+
+**10** *Procambarus clarkii* individuals, each with eggs split across **4** preservation treatments (EtOH80, EtOH95, Iso70, Formalin10). There are not necessarily the same number of eggs placed in each preservation treatment from a given individual.
+
+You can check to make sure the data we're using matches what it should be...
+
+```{r}
+#| echo: false
+
+# Number of individuals
+length(unique(df_analysis$ind_num))
+
+# List of treatments
+unique(df_analysis$treatment)
+```
+
+The variables of this study are...
+
+| Type | Variable(s)  |
+| ---- | ------------ |
+| Independent | Treatment, Individual* | 
+| Dependent | Egg size (diameter in mm) | 
+| Controlled | Species, Individual* | 
+
+The [assumptions](https://www.statology.org/parametric-tests-assumptions/) for most parametric tests are:
+
+1. Normality
+2. Equal variance
+3. Independence - data is sampled randomly and independently (not biased)
+4. No outliers (no extremes)
+
+Our experimental design violates the assumption of independence --- there are multiple egg measurements per individual. We have **repeated measures**, which, if ignored, undermines the statistical sanctity of the results (i.e., your interpretation would not be valid if you just ignore it). 
+
+To account for repeated measures, you can explicitly model the correlation between that of the dependent variable (egg size (continuous)) and the source of the repeated measure (individual) using a **linear mixed-effect model** or **repeated-measures ANOVA**. 
+
+Since the eggs from each individual were spread across the four treatments, the experimental design is **crossed**. There were not an equal number of eggs per individual/ per treatment, it is also **unbalanced**.
+
+## Linear Mixed-Effect Model (LME)
+
+The R package `{lme4}` is widely used for linear mixed effect modelling. The base R function `lm()` is for linear models, but it can't handle experimental designs with random factors, so that's why we need `{lme4}`.
+
+There are a couple considerations in the `lmer()` function that we'll want to overload. The R package `{lmerTest}` does this, so we'll load it too.
+
+```{r}
+#| message: false
+#| warning: false
+library(lme4)
+library(lmerTest)
+```
+
+::: {.callout-tip collapse="true" title="Learn more about these models!"}
+You can learn more about linear models in Chapter 18 of *The Analysis of Biological Data* by Whitlock and Schluter (3rd Edition, ISBN-10: 131922623X) --- [(R Code for Examples)](https://whitlockschluter3e.zoology.ubc.ca/RExamples/Rcode_Chapter_18.html). 
+
+Dynamic Ecology has a interesting blog post on effects... [Is it a fixed or random effect?](https://dynamicecology.wordpress.com/2015/11/04/is-it-a-fixed-or-random-effect/)
+
+There's also a great chapter on [**Linear Mixed Models** from a Washington U course](https://courses.washington.edu/psy524a/_book/linear-mixed-models.html).
+:::
+
+For the model, the user defines the response, fixed effect, and random effect(s). 
+
+$$\mathrm{Egg Diameter}_{ij} = \mathrm{Treatment}_i + (1| \mathrm{Individual}_j)$$
+
+Since every individual has eggs across all four treatments, the model can cleanly separate the effect of the treatment from the unique characters of the individual. `lmer` uses **maximum likelihood** (ML) estimates that naturally weight individuals with more eggs heavier for calculating individual traits while still accurately calculating the overall effect of treatment. The model also pulls/ "shrinks" extreme averages toward the global mean, which prevents a single individual with few eggs from potentially skewing the result.
+
+```{r}
+df_analysis$ind_num <- as.factor(df_analysis$ind_num)
+df_analysis$treatment <- as.factor(df_analysis$treatment)
+```
+
+```{r}
+# Create the model
+mod_full <- lmer(egg_diameter_mm ~ treatment + (1|ind_num) + (1|treatment:ind_num), data = df_analysis)
+
+# View the result
+mod_full
+```
+
+### Overall Treatment Effect
+
+Passing the output of `lmer()` to `anova()` gives you the ANOVA table.
+
+```{r}
+anova(mod_full)
+```
+
+P < 0.05, so **treatment significantly affects the egg diameter**, but it does not give more information as to *which* treatments differ. We'll need to do pairwise comparisons to figure that out.
+
+### Pairwise Comparisons
+
+The treatment is significant, so we can use the R package `{emmeans}` (estimated marginal means). 
+
+```{r}
+library(emmeans)
+```
+
+```{r}
+emm <- emmeans(mod_full, ~ treatment)
+```
+
+```{r}
+pairs(emm, adjust = "tukey")
+```
+
+::: {.callout-note}
+Look at `p.value` in the output. Any value under 0.05 means the two treatments (in `contrast`) are statistically different.
+:::
+
+Mean egg diameter differed in all preservative types.
+
+```{r}
+summary(emm)
+```
+
+Linear mixed models assume the residuals are normally distributed and have equal variance. The study design is unbalanced, so verifying assumptions is even more important.
+
+```{r}
+# Check variance
+plot(mod_full)
+
+# Visual check for normality of residuals
+qqnorm(residuals(mod_full), main = "Q-Q Plot of Residuals")
+qqline(residuals(mod_full), col = "red", lwd = 2)
+
+# Statistical check for normality of residuals
+shapiro.test(residuals(mod_full))
+```
+
+The residuals are falling pretty darn far from the line, especially on the lower end. Since we are dealing with linear measurement data, this kind of normality violation is kind of expected and we can try to transform the data and re-run the model...
+
+```{r}
+df_analysis$log_egg_diameter_mm <- log(df_analysis$egg_diameter_mm) + 1
+```
+
+```{r}
+mod_log <- lmer(log_egg_diameter_mm ~ treatment + (1|ind_num) + (1|treatment:ind_num), data = df_analysis)
+```
+
+Now we can check the assumptions again before moving forward...
+
+```{r}
+# Check variance
+plot(mod_log)
+
+# Check normality of residuals
+qqnorm(residuals(mod_log), main = "Q-Q Plot of Residuals (log-transformation)")
+qqline(residuals(mod_log), col = "red", lwd = 2)
+```
+
+Still, normality is not fantastic, but it's slightly better.
+
+Another assumption is equal variances. We can check this visually, or with a statistical test.
+```{r}
+# Visual Check: Points should be random cloud/ smear
+plot(mod_log, type = c("p", "smooth"),
+     main = "Residuals vs Fitted Values",
+     xlab = "Fitted Values", ylab = "Residuals")
+
+# Levene's Test: p > 0.05 means variance is equal across groups (treatments)
+leveneTest(residuals(mod_log) ~ df_analysis$treatment)
+```
+
+Variances are not equal, so we can either proceed with a huge amount of caution in interpretation or start to use conservative approaches. 
+
+```{r}
+anova(mod_log)
+mod_log.out <- summary(mod_log)
+
+total_variance <- sum(as_tibble(mod_log.out$varcor)$vcov)
+
+ind_variance <- as_tibble(mod_log.out$varcor) %>%
+  filter(grp == "ind_num") %>%
+  pull(vcov)
+
+# Interclass Correlation Coefficient (ICC)
+ind_variance / total_variance
+```
+
+48.8% of all variation in egg diameter is simply due to differences between individuals...
+
+```{r}
+emm_log <- emmeans(mod_log, ~ treatment)
+pairs(emm_log, adjust = "tukey")
+```
+
+All treatments are remain different from one another... and we have the issue of unequal variances.
+
+## Going Further, the Conservative Route
+
+Having all the treatments be statistically significant from one another is just down right weird. We know that the residuals of the model were skewed, even after the egg diameters were log transformed. Since the normality assumption is violated, the p-values are probably artificially deflated. We need to know if our treatment differences are real, so we can use a **generalized linear mixed model** (GLMM) with a link function.
+
+```{r}
+robust_mod <- glmer(egg_diameter_mm ~ treatment + (1|ind_num), family = Gamma(link = "log"), 
+                    data = df_analysis)
+library(car)
+library(DHARMa)
+Anova(robust_mod, type = "III")
+
+residuals_sim <- simulateResiduals(fittedModel = robust_mod)
+plot(residuals_sim)
+```
+
+::: {.callout-note}
+The **Gamma** distribution called from `family =` tells the function to expect the skewed data. It adjusts the standard errors, so the pairwise comparisons might be more realistic. 
+
+Read more about link functions on R-bloggers: [Generalized Linear Models understanding the link function](https://www.r-bloggers.com/2018/10/generalized-linear-models-understanding-the-link-function/)
+:::
+
+## Data Cleaning Method...
+
+It seems like the positive skew could be caused by a handful of outliers that could be damaged eggs, measurement errors, or potentially unviable runts. These outliers can be pulled out of the data set systematically using Cook's distance...
+```{r}
+install.packages("influence.ME")
+library(influence.ME)
+
+# Get influence of each observation
+infl <- influence(mod_full, obs = TRUE) 
+cooks <- cooks.distance(infl)
+
+# View observations with high leverage
+# -- Cook's distance > 4/n is a standard rule
+high_influences <- which(cooks > (4 / nrow(df_analysis)))
+
+# Subset data to get rid of high influences...
+df_sub <- df_analysis %>%
+  slice(-high_influences)
+
+# Fit model without the outliers
+mod_sub <- lmer(egg_diameter_mm ~ treatment + (1|ind_num), data = df_sub)
+
+# Visual check of assumptions
+library(performance)
+check_model(mod_sub)
+# -- Normality issue fixed, but variance looks slightly off.
+
+# Statistical test of assumptions
+shapiro.test(residuals(mod_sub))
+leveneTest(residuals(mod_sub) ~ df_sub$treatment)
+```
+
+Normality problem is fixed with removing outliers, but there is an issue of variance. Linear mixed models are vulnerable to unequal variances. It is a good idea to move forward trying a more robust approach.
+
+## Robust Model: `nmle` {#sec-robust-model}
+
+```{r}
+# 1. Load the packages
+library(nlme)
+library(car)      # For Type III Anova
+library(emmeans)  # For post-hoc pairwise comparisons
+
+# 2. Fit the model using Generalized Least Squares via lme
+# random = ~ 1 | ind_num/treatment builds the nested random interaction term
+# weights = varIdent(form = ~ 1 | treatment) models unique variances per group
+nlme_model <- lme(fixed = egg_diameter_mm ~ treatment, 
+                  random = ~ 1 | ind_num/treatment, 
+                  weights = varIdent(form = ~ 1 | treatment), 
+                  data = df_sub,
+                  method = "REML")
+```
+
+```{r}
+# 3. View the model summary (shows the estimated standard deviations per treatment)
+summary(nlme_model)
+```
+
+```{r}
+# 4. Generate the Type III ANOVA table 
+# "marginal" in nlme is equivalent to Type III Sum of Squares
+anova(nlme_model, type = "marginal")
+# Anova(nlme_model, type = "III")
+```
+
+```{r}
+# 5. Conduct post-hoc Tukey adjustments to see which treatments differ
+treatment_means <- emmeans(nlme_model, ~ treatment)
+pairwise_comps <- pairs(treatment_means, adjust = "tukey")
+pairwise_comps
+```
+
+# Visualization
+
+The best (statistically sound model) is the [robust model](#sec-robust-model) from `{nmle}`.
+
+* Accomodates randomized block design with subsampling and unequal design
+* Potential outliers were removed using a Cook's distance threshold
+* Used `varIdent` function to address heteroscedasticity
+* Individuals and treatment-by-individual interaction were modeled as nested random effects.
+* Significant effect of treatment on egg diameter (Type III ANOVA)
+* Post-hoc pairwise comparisons with Tukey adjustments
+  - Iso70 had larger egg diameters than all other groups
+  - No difference between EtOH80 and EtOH95
+  - Formalin10 resulted in significantly smaller egg sizes than all other treatments.
+
+## Step 1: Prepare the estimated means data
+You need to extract the clean statistical means from the model. We already have `treatment_means`, but it needs to be turned into a form that can be used by our graphing method.
+
+```{r}
+class(treatment_means)
+
+df_emmeans <- as.data.frame(treatment_means)
+head(df_emmeans)
+```
+
+## Step 2: Make the ggplot object 
+
+I want the treatment categories on the plot to be in order from smallest to largest. 
+```{r}
+df_sub %>%
+  select(treatment, egg_diameter_mm) %>%
+  group_by(treatment) %>%
+  summarize(mean = mean(egg_diameter_mm))
+order <- c("Formalin10")
+```
+
+```{r}
+library(ggplot2)
+
+df_sub %>%
+  # PREP: Put categories in order small to large
+  mutate(treatment = fct_reorder(treatment, egg_diameter_mm, .fun = 'mean')) %>%
+ggplot(aes(x = treatment, y = egg_diameter_mm)) +
+  
+  # Layer 1: Individual eggs colored by individual
+  geom_jitter(aes(color = as.factor(ind_num)), alpha = 0.2, width = 0.2, size = 1) +
+  
+  # Layer 2: Boxplots
+  geom_boxplot(alpha = 0.5, 
+               outlier.shape = NA, 
+               fill = "white", color = "black", width = 0.5) +
+  
+  # Layer 3: Estimated marginal means
+  geom_point(data = df_emmeans, aes(x = treatment, y = emmean),
+             color = "red", shape = 18, size = 5) +
+  
+  # Layer 4: Labels & theme customization
+  labs(
+    title = "Effect of Preservation Treatment on Egg Diameter",
+    subtitle = "Red diamonds represent model-estimated marginal means",
+    x = "Treatment Group",
+    y = "Egg Diameter (mm)",
+    color = "Individual ID (Block)"
+  ) + 
+  theme_classic(base_size = 14) + 
+  theme(
+    plot.title = element_text(face = "bold", hjust = 0.5),
+    plot.subtitle = element_text(hjust = 0.5, color = "gray30"),
+    legend.position = "right"
+  )
+```
+
+```{r}
+#| eval: false
+#| include: false
+
+# THIS IS UNFINISHED
+library(multcomp)
+## Generate significance letters ##
+treatment_means
+# Convert emmeans object to general linear hypothesis object (glht)
+glht_comps <- as.glht(model_robust, linfct = mcp(treatment = "Tukey"))
+glht_comps
+letters_data <- cld(glht_comps, Letters = letters)
+letters_df <- as.data.frame(letters_data)
+# Clean whitespace in letter column...
+letters_df$.group <- trimws(letters_df$.group)
+```
+
+
+```{r}
+#| eval: false
+#| include: false
+
+# 5. Plot raw data boxplots with overlaid Tukey letters
+ggplot(df_sub, aes(x = treatment, y = egg_diameter_mm)) +
+  geom_boxplot(aes(fill = treatment), alpha = 0.6, outlier.shape = NA) +
+  geom_jitter(width = 0.1, alpha = 0.4) + # Shows individual egg data points
+  geom_text(data = letters_df, 
+            aes(x = contrast, y = max(df_sub$egg_diameter_mm) * 1.05, label = .group),
+            vjust = 0, fontface = "bold", size = 5) +
+  labs(y = "Egg Diameter (mm)", x = "Treatment") +
+  theme_minimal()
+```
+
+# EXTRA CODE
+```{r}
+#| eval: false
+emm_log.df <- as.data.frame(emm_log)
+
+ggplot(emm_log.df, aes(x = treatment, y = emmean)) +
+  geom_point(size = 3, color = "blue") +
+  geom_errorbar(
+    aes(ymin = lower.CL,
+        ymax = upper.CL),
+    width = 0.2
+  ) +
+  labs(y = "Estimated Egg Diameter (mm)", x = "Treatment") +
+  theme_minimal()
+```
+

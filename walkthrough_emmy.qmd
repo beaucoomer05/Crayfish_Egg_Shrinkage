@@ -3,8 +3,15 @@ title: "Data Analysis"
 author: 
   - name: Beau Coomer
   - name: Emmy Delekta
-format: html
-editor: visual
+format: 
+  html:
+    theme: minty
+    toc: true
+    toc-depth: 2
+    highlight-style: github
+    code-tools: true
+    fig-align: center
+editor: source
 editor_options: 
   chunk_output_type: console
 ---
@@ -88,6 +95,7 @@ clean_csvs<-clean_csvs %>%
 All of the important identifying information is kept in the file names. 
 
 ```{r}
+#| eval: false
 # One way to split file names into usable chunks...
 str_split_fixed(clean_csvs$source_file,"\\-",4)
 ```
@@ -250,10 +258,13 @@ P < 0.05, so **treatment significantly affects the egg diameter**, but it does n
 The treatment is significant, so we can use the R package `{emmeans}` (estimated marginal means). 
 
 ```{r}
+#| message: false
+#| warning: false
 library(emmeans)
 ```
 
 ```{r}
+#| message: false
 emm <- emmeans(mod_full, ~ treatment)
 ```
 
@@ -309,6 +320,13 @@ qqline(residuals(mod_log), col = "red", lwd = 2)
 Still, normality is not fantastic, but it's slightly better.
 
 Another assumption is equal variances. We can check this visually, or with a statistical test.
+
+```{r}
+#| include: false
+#| eval: true
+library(car)
+```
+
 ```{r}
 # Visual Check: Points should be random cloud/ smear
 plot(mod_log, type = c("p", "smooth"),
@@ -349,6 +367,10 @@ All treatments are remain different from one another... and we have the issue of
 Having all the treatments be statistically significant from one another is just down right weird. We know that the residuals of the model were skewed, even after the egg diameters were log transformed. Since the normality assumption is violated, the p-values are probably artificially deflated. We need to know if our treatment differences are real, so we can use a **generalized linear mixed model** (GLMM) with a link function.
 
 ```{r}
+#| eval: true
+#| include: true
+#| warning: false
+#| message: false
 robust_mod <- glmer(egg_diameter_mm ~ treatment + (1|ind_num), family = Gamma(link = "log"), 
                     data = df_analysis)
 library(car)
@@ -369,11 +391,32 @@ Read more about link functions on R-bloggers: [Generalized Linear Models underst
 
 It seems like the positive skew could be caused by a handful of outliers that could be damaged eggs, measurement errors, or potentially unviable runts. These outliers can be pulled out of the data set systematically using Cook's distance...
 ```{r}
-install.packages("influence.ME")
+# install.packages("influence.ME")
 library(influence.ME)
+```
 
+```{r}
+#| eval: false
 # Get influence of each observation
 infl <- influence(mod_full, obs = TRUE) 
+```
+
+:::{.callout-warning}
+Running `influence()` takes a looong time. To save time, save it as an RData object (.RDS) with `saveRDS()` and you can use it in the future by loading it with `readRDS()`.
+:::
+
+```{r}
+#| eval: false
+saveRDS(infl, file = "data/rds_objects/infl.rds")
+```
+
+```{r}
+#| label: "Load infl.rds"
+#| eval: true
+infl <- readRDS("data/rds_objects/infl.rds")
+```
+
+```{r}
 cooks <- cooks.distance(infl)
 
 # View observations with high leverage
@@ -402,11 +445,15 @@ Normality problem is fixed with removing outliers, but there is an issue of vari
 ## Robust Model: `nmle` {#sec-robust-model}
 
 ```{r}
+#| warning: false
+#| message: false
 # 1. Load the packages
 library(nlme)
 library(car)      # For Type III Anova
 library(emmeans)  # For post-hoc pairwise comparisons
+```
 
+```{r}
 # 2. Fit the model using Generalized Least Squares via lme
 # random = ~ 1 | ind_num/treatment builds the nested random interaction term
 # weights = varIdent(form = ~ 1 | treatment) models unique variances per group
@@ -465,10 +512,9 @@ head(df_emmeans)
 I want the treatment categories on the plot to be in order from smallest to largest. 
 ```{r}
 df_sub %>%
-  select(treatment, egg_diameter_mm) %>%
+  dplyr::select(treatment, egg_diameter_mm) %>%
   group_by(treatment) %>%
   summarize(mean = mean(egg_diameter_mm))
-order <- c("Formalin10")
 ```
 
 ```{r}

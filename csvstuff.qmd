@@ -95,7 +95,6 @@ body_measures <- read.csv("data/crayfish_body_measurements.csv")
 egg_diameter_avgs<-unique_id %>%
   group_by(treatment_ind_number) %>%
   summarize(avg = mean(egg_diameter_mm))
-
 ```
 
 ```{r}
@@ -129,6 +128,14 @@ treatment_avgs<-egg_diameter_avgs %>%
 treatment_avgsv<-treatment_avgs %>%
   group_by(treatment) %>%
   summarize(avg = mean(avg))
+```
+
+```{r}
+quartiles<-tmp %>%
+  select(treatment,egg_diameter_mm) %>%
+  group_by(treatment) %>%
+  reframe(Q1 = quantile(egg_diameter_mm,prob = 0.25),Median = median(egg_diameter_mm),Q3 = quantile(egg_diameter_mm,prob = 0.75))
+view(quartiles)
 ```
 
 

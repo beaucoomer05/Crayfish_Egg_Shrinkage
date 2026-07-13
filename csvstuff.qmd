@@ -25,8 +25,13 @@ You can have functions from R packages (like `dplyr`), but you can also write R 
 source("custom_functions/clean_keyence_csv.R") 
 ```
 
-Use the function like this...
+## Dataset 1: Egg Measures
 
+<<<<<<< HEAD
+=======
+Use the custom function that was imported like this...
+
+>>>>>>> 12d9f5c45b6155ca587f68ae08decddb7fd31d7b
 1.  Get your file names
 
 ```{r}
@@ -51,6 +56,7 @@ Then, you can check out your result like this...
 View(compiled_data)
 ```
 
+<<<<<<< HEAD
 # Cleaning Data
 
 ```{r}
@@ -63,22 +69,81 @@ call("clean_csvs")
 str_split_fixed(clean_csvs$source_file,"\\-",4)
 ```
 
+=======
+## Dataset 2: Body Measures
+
+```{r}
+body_measures <- read.csv("data/crayfish_body_measurements.csv")
+```
+
+# Cleaning Data
+
+First, subset the `compiled_data` object to drop irrelevant columns. The `!` tells `select()` to keep everything *except* the columns listed. 
+
+```{r}
+clean_csvs<-compiled_data %>%
+  select(!c(Measure,date_saved))
+
+call("clean_csvs") # What is call() for??? -Emmy
+```
+
+It's best practice to have all names in R to be easily type-able. We can accomplish this by...
+
+* No punctuation at the beginning or end of a string
+* Using all lowercase
+
+You can do a direct rename of columns in R by `rename(new_name = old_name)`. If needing to change a bunch of column names, use `rename_with()`.
+
+>>>>>>> 12d9f5c45b6155ca587f68ae08decddb7fd31d7b
 ```{r}
 clean_csvs<-clean_csvs %>%
   rename(egg_no=No.) %>%
   rename_with(tolower)
 ```
 
+<<<<<<< HEAD
+=======
+All of the important identifying information is kept in the file names. 
+
+>>>>>>> 12d9f5c45b6155ca587f68ae08decddb7fd31d7b
 ```{r}
-tmp<-clean_csvs %>%
-  separate_wider_delim(cols = source_file,delim = "-",names = c("species","treatment","ind_num",NA))
-view(tmp)
-class(tmp$result)
+# One way to split file names into usable chunks...
+str_split_fixed(clean_csvs$source_file,"\\-",4)
 ```
 
 ```{r}
+# Better way to split the file names into usable chunks + keep the info
+# -- in the data frame
+tmp<-clean_csvs %>%
+  separate_wider_delim(cols = source_file,delim = "-",names = c("species","treatment","ind_num",NA))
+```
+
+```{r}
+#| eval: false
+View(tmp)
+```
+
+Sometimes R will yell at if the data type isn't appropraite. You can check the data type of anything using `class()`.
+
+```{r}
+# Works on objects
+class(tmp)
+
+# And it can also work on parts of the object
+class(tmp$result)
+```
+
+<<<<<<< HEAD
+=======
+
+If the class isn't what it should be, you can fix it on the fly using one of the many `as.___()` functions. Just know that sometimes, it is not going to work and it may not always be appropriate!
+
+>>>>>>> 12d9f5c45b6155ca587f68ae08decddb7fd31d7b
+```{r}
 tmp<-tmp %>%
   mutate(result=as.numeric(result))
+
+# "$result" is ambiguous and could be misleading, so rename for clarity
 tmp<-tmp %>%
 rename(egg_diameter_mm=result)
 ```
@@ -88,11 +153,15 @@ unique_id <- unite(tmp,treatment,ind_num,col = "treatment_ind_number",sep = "_")
 ```
 
 ```{r}
+<<<<<<< HEAD
 body_measures <- read.csv("data/crayfish_body_measurements.csv")
 ```
 
 ```{r}
 egg_diameter_avgs<-unique_id %>%
+=======
+egg_diameter_avgs<-tmp %>%
+>>>>>>> 12d9f5c45b6155ca587f68ae08decddb7fd31d7b
   group_by(treatment_ind_number) %>%
   summarize(avg = mean(egg_diameter_mm))
 ```
@@ -101,6 +170,7 @@ egg_diameter_avgs<-unique_id %>%
 ind_egg_counts<-unique_id %>%
   group_by(treatment_ind_number) %>%
   summarize(egg_count = n())
+<<<<<<< HEAD
 ```
 
 ```{r}
@@ -139,3 +209,8 @@ view(quartiles)
 ```
 
 
+=======
+
+ind_egg_counts
+```
+>>>>>>> 12d9f5c45b6155ca587f68ae08decddb7fd31d7b

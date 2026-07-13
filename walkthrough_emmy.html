@@ -1,0 +1,2097 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Beau Coomer">
+<meta name="author" content="Emmy Delekta">
+
+<title>Data Analysis</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="walkthrough_emmy_files/libs/clipboard/clipboard.min.js"></script>
+<script src="walkthrough_emmy_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="walkthrough_emmy_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="walkthrough_emmy_files/libs/quarto-html/popper.min.js"></script>
+<script src="walkthrough_emmy_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="walkthrough_emmy_files/libs/quarto-html/anchor.min.js"></script>
+<link href="walkthrough_emmy_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="walkthrough_emmy_files/libs/quarto-html/quarto-syntax-highlighting-acf12a64177840b8d86f2d4f01b2e9fb.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="walkthrough_emmy_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="walkthrough_emmy_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="walkthrough_emmy_files/libs/bootstrap/bootstrap-4f6eab577d0e7e737fbc04a96e1322b1.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#importing-data" id="toc-importing-data" class="nav-link active" data-scroll-target="#importing-data">Importing Data</a>
+  <ul class="collapse">
+  <li><a href="#dataset-1-egg-measures" id="toc-dataset-1-egg-measures" class="nav-link" data-scroll-target="#dataset-1-egg-measures">Dataset 1: Egg Measures</a></li>
+  <li><a href="#dataset-2-body-measures" id="toc-dataset-2-body-measures" class="nav-link" data-scroll-target="#dataset-2-body-measures">Dataset 2: Body Measures</a></li>
+  </ul></li>
+  <li><a href="#cleaning-data" id="toc-cleaning-data" class="nav-link" data-scroll-target="#cleaning-data">Cleaning Data</a></li>
+  <li><a href="#summary-statistics" id="toc-summary-statistics" class="nav-link" data-scroll-target="#summary-statistics">Summary Statistics</a>
+  <ul class="collapse">
+  <li><a href="#average-egg-diameter" id="toc-average-egg-diameter" class="nav-link" data-scroll-target="#average-egg-diameter">Average egg diameter</a></li>
+  <li><a href="#eggs-per-individual-across-treatments" id="toc-eggs-per-individual-across-treatments" class="nav-link" data-scroll-target="#eggs-per-individual-across-treatments">Eggs per individual across treatments</a></li>
+  </ul></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis">Analysis</a>
+  <ul class="collapse">
+  <li><a href="#experimental-design" id="toc-experimental-design" class="nav-link" data-scroll-target="#experimental-design">Experimental Design</a></li>
+  <li><a href="#linear-mixed-effect-model-lme" id="toc-linear-mixed-effect-model-lme" class="nav-link" data-scroll-target="#linear-mixed-effect-model-lme">Linear Mixed-Effect Model (LME)</a></li>
+  <li><a href="#going-further-the-conservative-route" id="toc-going-further-the-conservative-route" class="nav-link" data-scroll-target="#going-further-the-conservative-route">Going Further, the Conservative Route</a></li>
+  <li><a href="#data-cleaning-method" id="toc-data-cleaning-method" class="nav-link" data-scroll-target="#data-cleaning-method">Data Cleaning Method…</a></li>
+  <li><a href="#sec-robust-model" id="toc-sec-robust-model" class="nav-link" data-scroll-target="#sec-robust-model">Robust Model: <code>nmle</code></a></li>
+  </ul></li>
+  <li><a href="#visualization" id="toc-visualization" class="nav-link" data-scroll-target="#visualization">Visualization</a>
+  <ul class="collapse">
+  <li><a href="#step-1-prepare-the-estimated-means-data" id="toc-step-1-prepare-the-estimated-means-data" class="nav-link" data-scroll-target="#step-1-prepare-the-estimated-means-data">Step 1: Prepare the estimated means data</a></li>
+  <li><a href="#step-2-make-the-ggplot-object" id="toc-step-2-make-the-ggplot-object" class="nav-link" data-scroll-target="#step-2-make-the-ggplot-object">Step 2: Make the ggplot object</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Data Analysis</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Authors</div>
+    <div class="quarto-title-meta-contents">
+             <p>Beau Coomer </p>
+             <p>Emmy Delekta </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="importing-data" class="level1">
+<h1>Importing Data</h1>
+<p>You always want to load your packages at the top of your script/ document.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>You can have functions from R packages (like <code>dplyr</code>), but you can also write R functions yourself. Load the custom function <a href="custom_functions/clean_keyence_csv.R">clean_keyence_csv</a>…</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load clean_keyence_csv()</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"custom_functions/clean_keyence_csv.R"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="dataset-1-egg-measures" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-1-egg-measures">Dataset 1: Egg Measures</h2>
+<p>Use the custom function that was imported like this…</p>
+<ol type="1">
+<li>Get your file names</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>file_paths <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"data/raw"</span>, <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">.csv$"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<ol start="2" type="1">
+<li>Process it all into one tibble (similar to data.frame)</li>
+</ol>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>  compiled_data <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    file_paths <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>      <span class="fu">set_names</span>(<span class="fu">basename</span>(.)) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">map</span>(clean_keyence_csv) <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list_rbind</span>(<span class="at">names_to =</span> <span class="st">"source_file"</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Then, you can check out your result like this…</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(compiled_data)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="dataset-2-body-measures" class="level2">
+<h2 class="anchored" data-anchor-id="dataset-2-body-measures">Dataset 2: Body Measures</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>body_measures <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/crayfish_body_measurements.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="cleaning-data" class="level1">
+<h1>Cleaning Data</h1>
+<p>First, subset the <code>compiled_data</code> object to drop irrelevant columns. The <code>!</code> tells <code>select()</code> to keep everything <em>except</em> the columns listed.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>clean_csvs<span class="ot">&lt;-</span>compiled_data <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(Measure,date_saved))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">call</span>(<span class="st">"clean_csvs"</span>) <span class="co"># What is call() for??? -Emmy</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>clean_csvs()</code></pre>
+</div>
+</div>
+<p>It’s best practice to have all names in R to be easily type-able. We can accomplish this by…</p>
+<ul>
+<li>No punctuation at the beginning or end of a string</li>
+<li>Using all lowercase</li>
+</ul>
+<p>You can do a direct rename of columns in R by <code>rename(new_name = old_name)</code>. If needing to change a bunch of column names, use <code>rename_with()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>clean_csvs<span class="ot">&lt;-</span>clean_csvs <span class="sc">%&gt;%</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">egg_no=</span>No.) <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(tolower)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>All of the important identifying information is kept in the file names.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># One way to split file names into usable chunks...</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_split_fixed</span>(clean_csvs<span class="sc">$</span>source_file,<span class="st">"</span><span class="sc">\\</span><span class="st">-"</span>,<span class="dv">4</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Better way to split the file names into usable chunks + keep the info</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># -- in the data frame</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>tmp<span class="ot">&lt;-</span>clean_csvs <span class="sc">%&gt;%</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_wider_delim</span>(<span class="at">cols =</span> source_file,<span class="at">delim =</span> <span class="st">"-"</span>,<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"species"</span>,<span class="st">"treatment"</span>,<span class="st">"ind_num"</span>,<span class="cn">NA</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(tmp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Sometimes R will yell at if the data type isn’t appropraite. You can check the data type of anything using <code>class()</code>.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Works on objects</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(tmp)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "tbl_df"     "tbl"        "data.frame"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># And it can also work on parts of the object</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(tmp<span class="sc">$</span>result)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+<p>If the class isn’t what it should be, you can fix it on the fly using one of the many <code>as.___()</code> functions. Just know that sometimes, it is not going to work and it may not always be appropriate!</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>tmp<span class="ot">&lt;-</span>tmp <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">result=</span><span class="fu">as.numeric</span>(result))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a><span class="co"># "$result" is ambiguous and could be misleading, so rename for clarity</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>tmp<span class="ot">&lt;-</span>tmp <span class="sc">%&gt;%</span></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="fu">rename</span>(<span class="at">egg_diameter_mm=</span>result)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Make object to use for summary stats</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>df_summaries <span class="ot">&lt;-</span> <span class="fu">unite</span>(tmp,treatment,ind_num,<span class="at">col =</span> <span class="st">"treatment_ind_number"</span>,<span class="at">sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Make data that keeps those columns separate</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>df_analysis <span class="ot">&lt;-</span> tmp</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="summary-statistics" class="level1">
+<h1>Summary Statistics</h1>
+<section id="average-egg-diameter" class="level2">
+<h2 class="anchored" data-anchor-id="average-egg-diameter">Average egg diameter</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>egg_diameter_avgs<span class="ot">&lt;-</span>df_summaries <span class="sc">%&gt;%</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment_ind_number) <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg =</span> <span class="fu">mean</span>(egg_diameter_mm))</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>egg_diameter_avgs</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 40 × 2
+   treatment_ind_number   avg
+   &lt;chr&gt;                &lt;dbl&gt;
+ 1 EtOH80_1              2.09
+ 2 EtOH80_10             2.06
+ 3 EtOH80_2              1.94
+ 4 EtOH80_3              2.07
+ 5 EtOH80_4              1.80
+ 6 EtOH80_5              2.02
+ 7 EtOH80_6              2.04
+ 8 EtOH80_7              2.08
+ 9 EtOH80_8              1.94
+10 EtOH80_9              2.02
+# ℹ 30 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="eggs-per-individual-across-treatments" class="level2">
+<h2 class="anchored" data-anchor-id="eggs-per-individual-across-treatments">Eggs per individual across treatments</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ind_egg_counts<span class="ot">&lt;-</span>df_summaries <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment_ind_number) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">egg_count =</span> <span class="fu">n</span>())</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>ind_egg_counts</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 40 × 2
+   treatment_ind_number egg_count
+   &lt;chr&gt;                    &lt;int&gt;
+ 1 EtOH80_1                    43
+ 2 EtOH80_10                   39
+ 3 EtOH80_2                    99
+ 4 EtOH80_3                    58
+ 5 EtOH80_4                    26
+ 6 EtOH80_5                   127
+ 7 EtOH80_6                    55
+ 8 EtOH80_7                    69
+ 9 EtOH80_8                    88
+10 EtOH80_9                    95
+# ℹ 30 more rows</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="analysis" class="level1">
+<h1>Analysis</h1>
+<section id="experimental-design" class="level2">
+<h2 class="anchored" data-anchor-id="experimental-design">Experimental Design</h2>
+<p><strong>10</strong> <em>Procambarus clarkii</em> individuals, each with eggs split across <strong>4</strong> preservation treatments (EtOH80, EtOH95, Iso70, Formalin10). There are not necessarily the same number of eggs placed in each preservation treatment from a given individual.</p>
+<p>You can check to make sure the data we’re using matches what it should be…</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 10</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "EtOH80"     "EtOH95"     "Formalin10" "Iso70"     </code></pre>
+</div>
+</div>
+<p>The variables of this study are…</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Type</th>
+<th>Variable(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Independent</td>
+<td>Treatment, Individual*</td>
+</tr>
+<tr class="even">
+<td>Dependent</td>
+<td>Egg size (diameter in mm)</td>
+</tr>
+<tr class="odd">
+<td>Controlled</td>
+<td>Species, Individual*</td>
+</tr>
+</tbody>
+</table>
+<p>The <a href="https://www.statology.org/parametric-tests-assumptions/">assumptions</a> for most parametric tests are:</p>
+<ol type="1">
+<li>Normality</li>
+<li>Equal variance</li>
+<li>Independence - data is sampled randomly and independently (not biased)</li>
+<li>No outliers (no extremes)</li>
+</ol>
+<p>Our experimental design violates the assumption of independence — there are multiple egg measurements per individual. We have <strong>repeated measures</strong>, which, if ignored, undermines the statistical sanctity of the results (i.e., your interpretation would not be valid if you just ignore it).</p>
+<p>To account for repeated measures, you can explicitly model the correlation between that of the dependent variable (egg size (continuous)) and the source of the repeated measure (individual) using a <strong>linear mixed-effect model</strong> or <strong>repeated-measures ANOVA</strong>.</p>
+<p>Since the eggs from each individual were spread across the four treatments, the experimental design is <strong>crossed</strong>. There were not an equal number of eggs per individual/ per treatment, it is also <strong>unbalanced</strong>.</p>
+</section>
+<section id="linear-mixed-effect-model-lme" class="level2">
+<h2 class="anchored" data-anchor-id="linear-mixed-effect-model-lme">Linear Mixed-Effect Model (LME)</h2>
+<p>The R package <code>{lme4}</code> is widely used for linear mixed effect modelling. The base R function <code>lm()</code> is for linear models, but it can’t handle experimental designs with random factors, so that’s why we need <code>{lme4}</code>.</p>
+<p>There are a couple considerations in the <code>lmer()</code> function that we’ll want to overload. The R package <code>{lmerTest}</code> does this, so we’ll load it too.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled" title="Learn more about these models!">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Tip</span>Learn more about these models!
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>You can learn more about linear models in Chapter 18 of <em>The Analysis of Biological Data</em> by Whitlock and Schluter (3rd Edition, ISBN-10: 131922623X) — <a href="https://whitlockschluter3e.zoology.ubc.ca/RExamples/Rcode_Chapter_18.html">(R Code for Examples)</a>.</p>
+<p>Dynamic Ecology has a interesting blog post on effects… <a href="https://dynamicecology.wordpress.com/2015/11/04/is-it-a-fixed-or-random-effect/">Is it a fixed or random effect?</a></p>
+<p>There’s also a great chapter on <a href="https://courses.washington.edu/psy524a/_book/linear-mixed-models.html"><strong>Linear Mixed Models</strong> from a Washington U course</a>.</p>
+</div>
+</div>
+</div>
+<p>For the model, the user defines the response, fixed effect, and random effect(s).</p>
+<p><span class="math display">\[\mathrm{Egg Diameter}_{ij} = \mathrm{Treatment}_i + (1| \mathrm{Individual}_j)\]</span></p>
+<p>Since every individual has eggs across all four treatments, the model can cleanly separate the effect of the treatment from the unique characters of the individual. <code>lmer</code> uses <strong>maximum likelihood</strong> (ML) estimates that naturally weight individuals with more eggs heavier for calculating individual traits while still accurately calculating the overall effect of treatment. The model also pulls/ “shrinks” extreme averages toward the global mean, which prevents a single individual with few eggs from potentially skewing the result.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>df_analysis<span class="sc">$</span>ind_num <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df_analysis<span class="sc">$</span>ind_num)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>df_analysis<span class="sc">$</span>treatment <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df_analysis<span class="sc">$</span>treatment)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the model</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>mod_full <span class="ot">&lt;-</span> <span class="fu">lmer</span>(egg_diameter_mm <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ind_num) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>treatment<span class="sc">:</span>ind_num), <span class="at">data =</span> df_analysis)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="co"># View the result</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>mod_full</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed model fit by REML ['lmerModLmerTest']
+Formula: egg_diameter_mm ~ treatment + (1 | ind_num) + (1 | treatment:ind_num)
+   Data: df_analysis
+REML criterion at convergence: -6877.815
+Random effects:
+ Groups            Name        Std.Dev.
+ treatment:ind_num (Intercept) 0.03789 
+ ind_num           (Intercept) 0.07766 
+ Residual                      0.07799 
+Number of obs: 3109, groups:  treatment:ind_num, 40; ind_num, 10
+Fixed Effects:
+        (Intercept)      treatmentEtOH95  treatmentFormalin10  
+            2.00555             -0.01138             -0.06122  
+     treatmentIso70  
+            0.08566  </code></pre>
+</div>
+</div>
+<section id="overall-treatment-effect" class="level3">
+<h3 class="anchored" data-anchor-id="overall-treatment-effect">Overall Treatment Effect</h3>
+<p>Passing the output of <code>lmer()</code> to <code>anova()</code> gives you the ANOVA table.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+           Sum Sq Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
+treatment 0.44298 0.14766     3 25.286  24.279 1.292e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>P &lt; 0.05, so <strong>treatment significantly affects the egg diameter</strong>, but it does not give more information as to <em>which</em> treatments differ. We’ll need to do pairwise comparisons to figure that out.</p>
+</section>
+<section id="pairwise-comparisons" class="level3">
+<h3 class="anchored" data-anchor-id="pairwise-comparisons">Pairwise Comparisons</h3>
+<p>The treatment is significant, so we can use the R package <code>{emmeans}</code> (estimated marginal means).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mod_full, <span class="sc">~</span> treatment)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(emm, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> contrast            estimate     SE  df z.ratio p.value
+ EtOH80 - EtOH95       0.0114 0.0176 Inf   0.648  0.9162
+ EtOH80 - Formalin10   0.0612 0.0175 Inf   3.489  0.0027
+ EtOH80 - Iso70       -0.0857 0.0175 Inf  -4.886 &lt;0.0001
+ EtOH95 - Formalin10   0.0498 0.0175 Inf   2.841  0.0233
+ EtOH95 - Iso70       -0.0970 0.0175 Inf  -5.536 &lt;0.0001
+ Formalin10 - Iso70   -0.1469 0.0175 Inf  -8.385 &lt;0.0001
+
+Degrees-of-freedom method: asymptotic 
+P value adjustment: tukey method for comparing a family of 4 estimates </code></pre>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Look at <code>p.value</code> in the output. Any value under 0.05 means the two treatments (in <code>contrast</code>) are statistically different.</p>
+</div>
+</div>
+<p>Mean egg diameter differed in all preservative types.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(emm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> treatment  emmean     SE  df asymp.LCL asymp.UCL
+ EtOH80       2.01 0.0275 Inf      1.95      2.06
+ EtOH95       1.99 0.0275 Inf      1.94      2.05
+ Formalin10   1.94 0.0275 Inf      1.89      2.00
+ Iso70        2.09 0.0275 Inf      2.04      2.15
+
+Degrees-of-freedom method: asymptotic 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+<p>Linear mixed models assume the residuals are normally distributed and have equal variance. The study design is unbalanced, so verifying assumptions is even more important.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check variance</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_full)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_emmy_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visual check for normality of residuals</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(<span class="fu">residuals</span>(mod_full), <span class="at">main =</span> <span class="st">"Q-Q Plot of Residuals"</span>)</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(<span class="fu">residuals</span>(mod_full), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_emmy_files/figure-html/unnamed-chunk-26-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Statistical check for normality of residuals</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(<span class="fu">residuals</span>(mod_full))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  residuals(mod_full)
+W = 0.94153, p-value &lt; 2.2e-16</code></pre>
+</div>
+</div>
+<p>The residuals are falling pretty darn far from the line, especially on the lower end. Since we are dealing with linear measurement data, this kind of normality violation is kind of expected and we can try to transform the data and re-run the model…</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>df_analysis<span class="sc">$</span>log_egg_diameter_mm <span class="ot">&lt;-</span> <span class="fu">log</span>(df_analysis<span class="sc">$</span>egg_diameter_mm) <span class="sc">+</span> <span class="dv">1</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>mod_log <span class="ot">&lt;-</span> <span class="fu">lmer</span>(log_egg_diameter_mm <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ind_num) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>treatment<span class="sc">:</span>ind_num), <span class="at">data =</span> df_analysis)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Now we can check the assumptions again before moving forward…</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check variance</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_log)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_emmy_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check normality of residuals</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(<span class="fu">residuals</span>(mod_log), <span class="at">main =</span> <span class="st">"Q-Q Plot of Residuals (log-transformation)"</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(<span class="fu">residuals</span>(mod_log), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_emmy_files/figure-html/unnamed-chunk-29-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Still, normality is not fantastic, but it’s slightly better.</p>
+<p>Another assumption is equal variances. We can check this visually, or with a statistical test.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visual Check: Points should be random cloud/ smear</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_log, <span class="at">type =</span> <span class="fu">c</span>(<span class="st">"p"</span>, <span class="st">"smooth"</span>),</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Residuals vs Fitted Values"</span>,</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Fitted Values"</span>, <span class="at">ylab =</span> <span class="st">"Residuals"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_emmy_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Levene's Test: p &gt; 0.05 means variance is equal across groups (treatments)</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">leveneTest</span>(<span class="fu">residuals</span>(mod_log) <span class="sc">~</span> df_analysis<span class="sc">$</span>treatment)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Levene's Test for Homogeneity of Variance (center = median)
+        Df F value    Pr(&gt;F)    
+group    3  6.6113 0.0001891 ***
+      3105                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Variances are not equal, so we can either proceed with a huge amount of caution in interpretation or start to use conservative approaches.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_log)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Type III Analysis of Variance Table with Satterthwaite's method
+           Sum Sq  Mean Sq NumDF  DenDF F value    Pr(&gt;F)    
+treatment 0.10425 0.034749     3 25.224  22.383 2.768e-07 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>mod_log.out <span class="ot">&lt;-</span> <span class="fu">summary</span>(mod_log)</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>total_variance <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">as_tibble</span>(mod_log.out<span class="sc">$</span>varcor)<span class="sc">$</span>vcov)</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a>ind_variance <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(mod_log.out<span class="sc">$</span>varcor) <span class="sc">%&gt;%</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(grp <span class="sc">==</span> <span class="st">"ind_num"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(vcov)</span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Interclass Correlation Coefficient (ICC)</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>ind_variance <span class="sc">/</span> total_variance</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4500895</code></pre>
+</div>
+</div>
+<p>48.8% of all variation in egg diameter is simply due to differences between individuals…</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>emm_log <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mod_log, <span class="sc">~</span> treatment)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Note: D.f. calculations have been disabled because the number of observations exceeds 3000.
+To enable adjustments, add the argument 'pbkrtest.limit = 3109' (or larger)
+[or, globally, 'set emm_options(pbkrtest.limit = 3109)' or larger];
+but be warned that this may result in large computation time and memory use.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Note: D.f. calculations have been disabled because the number of observations exceeds 3000.
+To enable adjustments, add the argument 'lmerTest.limit = 3109' (or larger)
+[or, globally, 'set emm_options(lmerTest.limit = 3109)' or larger];
+but be warned that this may result in large computation time and memory use.</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(emm_log, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> contrast            estimate      SE  df z.ratio p.value
+ EtOH80 - EtOH95      0.00547 0.00890 Inf   0.615  0.9275
+ EtOH80 - Formalin10  0.03037 0.00890 Inf   3.415  0.0036
+ EtOH80 - Iso70      -0.04126 0.00889 Inf  -4.642 &lt;0.0001
+ EtOH95 - Formalin10  0.02490 0.00889 Inf   2.800  0.0263
+ EtOH95 - Iso70      -0.04673 0.00889 Inf  -5.259 &lt;0.0001
+ Formalin10 - Iso70  -0.07164 0.00888 Inf  -8.066 &lt;0.0001
+
+Degrees-of-freedom method: asymptotic 
+P value adjustment: tukey method for comparing a family of 4 estimates </code></pre>
+</div>
+</div>
+<p>All treatments are remain different from one another… and we have the issue of unequal variances.</p>
+</section>
+</section>
+<section id="going-further-the-conservative-route" class="level2">
+<h2 class="anchored" data-anchor-id="going-further-the-conservative-route">Going Further, the Conservative Route</h2>
+<p>Having all the treatments be statistically significant from one another is just down right weird. We know that the residuals of the model were skewed, even after the egg diameters were log transformed. Since the normality assumption is violated, the p-values are probably artificially deflated. We need to know if our treatment differences are real, so we can use a <strong>generalized linear mixed model</strong> (GLMM) with a link function.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>robust_mod <span class="ot">&lt;-</span> <span class="fu">glmer</span>(egg_diameter_mm <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ind_num), <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">"log"</span>), </span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> df_analysis)</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a><span class="fu">Anova</span>(robust_mod, <span class="at">type =</span> <span class="st">"III"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Deviance Table (Type III Wald chisquare tests)
+
+Response: egg_diameter_mm
+             Chisq Df Pr(&gt;Chisq)    
+(Intercept) 1042.5  1  &lt; 2.2e-16 ***
+treatment   1425.8  3  &lt; 2.2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>residuals_sim <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> robust_mod)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(residuals_sim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_emmy_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <strong>Gamma</strong> distribution called from <code>family =</code> tells the function to expect the skewed data. It adjusts the standard errors, so the pairwise comparisons might be more realistic.</p>
+<p>Read more about link functions on R-bloggers: <a href="https://www.r-bloggers.com/2018/10/generalized-linear-models-understanding-the-link-function/">Generalized Linear Models understanding the link function</a></p>
+</div>
+</div>
+</section>
+<section id="data-cleaning-method" class="level2">
+<h2 class="anchored" data-anchor-id="data-cleaning-method">Data Cleaning Method…</h2>
+<p>It seems like the positive skew could be caused by a handful of outliers that could be damaged eggs, measurement errors, or potentially unviable runts. These outliers can be pulled out of the data set systematically using Cook’s distance…</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("influence.ME")</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(influence.ME)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package 'influence.ME' was built under R version 4.4.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'influence.ME'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:stats':
+
+    influence</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get influence of each observation</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>infl <span class="ot">&lt;-</span> <span class="fu">influence</span>(mod_full, <span class="at">obs =</span> <span class="cn">TRUE</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Running <code>influence()</code> takes a looong time. To save time, save it as an RData object (.RDS) with <code>saveRDS()</code> and you can use it in the future by loading it with <code>readRDS()</code>.</p>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(infl, <span class="at">file =</span> <span class="st">"data/rds_objects/infl.rds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>infl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"data/rds_objects/infl.rds"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>cooks <span class="ot">&lt;-</span> <span class="fu">cooks.distance</span>(infl)</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a><span class="co"># View observations with high leverage</span></span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a><span class="co"># -- Cook's distance &gt; 4/n is a standard rule</span></span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>high_influences <span class="ot">&lt;-</span> <span class="fu">which</span>(cooks <span class="sc">&gt;</span> (<span class="dv">4</span> <span class="sc">/</span> <span class="fu">nrow</span>(df_analysis)))</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Subset data to get rid of high influences...</span></span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a>df_sub <span class="ot">&lt;-</span> df_analysis <span class="sc">%&gt;%</span></span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="sc">-</span>high_influences)</span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit model without the outliers</span></span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a>mod_sub <span class="ot">&lt;-</span> <span class="fu">lmer</span>(egg_diameter_mm <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ind_num), <span class="at">data =</span> df_sub)</span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Visual check of assumptions</span></span>
+<span id="cb67-15"><a href="#cb67-15" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb67-16"><a href="#cb67-16" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(mod_sub)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_emmy_files/figure-html/unnamed-chunk-39-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># -- Normality issue fixed, but variance looks slightly off.</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Statistical test of assumptions</span></span>
+<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(<span class="fu">residuals</span>(mod_sub))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  residuals(mod_sub)
+W = 0.95966, p-value &lt; 2.2e-16</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">leveneTest</span>(<span class="fu">residuals</span>(mod_sub) <span class="sc">~</span> df_sub<span class="sc">$</span>treatment)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Levene's Test for Homogeneity of Variance (center = median)
+        Df F value    Pr(&gt;F)    
+group    3  17.612 2.462e-11 ***
+      3104                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>Normality problem is fixed with removing outliers, but there is an issue of variance. Linear mixed models are vulnerable to unequal variances. It is a good idea to move forward trying a more robust approach.</p>
+</section>
+<section id="sec-robust-model" class="level2">
+<h2 class="anchored" data-anchor-id="sec-robust-model">Robust Model: <code>nmle</code></h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Load the packages</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)      <span class="co"># For Type III Anova</span></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)  <span class="co"># For post-hoc pairwise comparisons</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Fit the model using Generalized Least Squares via lme</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="co"># random = ~ 1 | ind_num/treatment builds the nested random interaction term</span></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="co"># weights = varIdent(form = ~ 1 | treatment) models unique variances per group</span></span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>nlme_model <span class="ot">&lt;-</span> <span class="fu">lme</span>(<span class="at">fixed =</span> egg_diameter_mm <span class="sc">~</span> treatment, </span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> ind_num<span class="sc">/</span>treatment, </span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> treatment), </span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> df_sub,</span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>                  <span class="at">method =</span> <span class="st">"REML"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. View the model summary (shows the estimated standard deviations per treatment)</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nlme_model)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Linear mixed-effects model fit by REML
+  Data: df_sub 
+        AIC       BIC   logLik
+  -7004.073 -6943.669 3512.037
+
+Random effects:
+ Formula: ~1 | ind_num
+        (Intercept)
+StdDev:  0.07788877
+
+ Formula: ~1 | treatment %in% ind_num
+        (Intercept)   Residual
+StdDev:  0.03799149 0.07852737
+
+Variance function:
+ Structure: Different standard deviations per stratum
+ Formula: ~1 | treatment 
+ Parameter estimates:
+    EtOH80     EtOH95 Formalin10      Iso70 
+ 1.0000000  1.0646952  0.7841553  1.0489137 
+Fixed effects:  egg_diameter_mm ~ treatment 
+                         Value  Std.Error   DF  t-value p-value
+(Intercept)          2.0055694 0.02760042 3068 72.66446  0.0000
+treatmentEtOH95     -0.0114675 0.01764714   27 -0.64982  0.5213
+treatmentFormalin10 -0.0612059 0.01748661   27 -3.50016  0.0016
+treatmentIso70       0.0875490 0.01761239   27  4.97088  0.0000
+ Correlation: 
+                    (Intr) tEOH95 trtF10
+treatmentEtOH95     -0.318              
+treatmentFormalin10 -0.321  0.503       
+treatmentIso70      -0.319  0.499  0.504
+
+Standardized Within-Group Residuals:
+       Min         Q1        Med         Q3        Max 
+-7.8043437 -0.5163077  0.0647880  0.6127573  3.7201319 
+
+Number of Observations: 3108
+Number of Groups: 
+               ind_num treatment %in% ind_num 
+                    10                     40 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Generate the Type III ANOVA table </span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="co"># "marginal" in nlme is equivalent to Type III Sum of Squares</span></span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(nlme_model, <span class="at">type =</span> <span class="st">"marginal"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            numDF denDF  F-value p-value
+(Intercept)     1  3068 5280.124  &lt;.0001
+treatment       3    27   24.944  &lt;.0001</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Anova(nlme_model, type = "III")</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Conduct post-hoc Tukey adjustments to see which treatments differ</span></span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>treatment_means <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(nlme_model, <span class="sc">~</span> treatment)</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>pairwise_comps <span class="ot">&lt;-</span> <span class="fu">pairs</span>(treatment_means, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>pairwise_comps</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> contrast            estimate     SE df t.ratio p.value
+ EtOH80 - EtOH95       0.0115 0.0176 27   0.650  0.9147
+ EtOH80 - Formalin10   0.0612 0.0175 27   3.500  0.0084
+ EtOH80 - Iso70       -0.0875 0.0176 27  -4.971  0.0002
+ EtOH95 - Formalin10   0.0497 0.0175 27   2.838  0.0399
+ EtOH95 - Iso70       -0.0990 0.0176 27  -5.611 &lt;0.0001
+ Formalin10 - Iso70   -0.1488 0.0175 27  -8.506 &lt;0.0001
+
+Degrees-of-freedom method: containment 
+P value adjustment: tukey method for comparing a family of 4 estimates </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="visualization" class="level1">
+<h1>Visualization</h1>
+<p>The best (statistically sound model) is the <a href="#sec-robust-model">robust model</a> from <code>{nmle}</code>.</p>
+<ul>
+<li>Accomodates randomized block design with subsampling and unequal design</li>
+<li>Potential outliers were removed using a Cook’s distance threshold</li>
+<li>Used <code>varIdent</code> function to address heteroscedasticity</li>
+<li>Individuals and treatment-by-individual interaction were modeled as nested random effects.</li>
+<li>Significant effect of treatment on egg diameter (Type III ANOVA)</li>
+<li>Post-hoc pairwise comparisons with Tukey adjustments
+<ul>
+<li>Iso70 had larger egg diameters than all other groups</li>
+<li>No difference between EtOH80 and EtOH95</li>
+<li>Formalin10 resulted in significantly smaller egg sizes than all other treatments.</li>
+</ul></li>
+</ul>
+<section id="step-1-prepare-the-estimated-means-data" class="level2">
+<h2 class="anchored" data-anchor-id="step-1-prepare-the-estimated-means-data">Step 1: Prepare the estimated means data</h2>
+<p>You need to extract the clean statistical means from the model. We already have <code>treatment_means</code>, but it needs to be turned into a form that can be used by our graphing method.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(treatment_means)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "emmGrid"
+attr(,"package")
+[1] "emmeans"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>df_emmeans <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(treatment_means)</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_emmeans)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> treatment    emmean         SE df lower.CL upper.CL
+ EtOH80     2.005569 0.02760042  9 1.943133 2.068006
+ EtOH95     1.994102 0.02762376  9 1.931613 2.056591
+ Formalin10 1.944363 0.02752073  9 1.882107 2.006620
+ Iso70      2.093118 0.02760148  9 2.030680 2.155557
+
+Degrees-of-freedom method: containment 
+Confidence level used: 0.95 </code></pre>
+</div>
+</div>
+</section>
+<section id="step-2-make-the-ggplot-object" class="level2">
+<h2 class="anchored" data-anchor-id="step-2-make-the-ggplot-object">Step 2: Make the ggplot object</h2>
+<p>I want the treatment categories on the plot to be in order from smallest to largest.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(treatment, egg_diameter_mm) <span class="sc">%&gt;%</span></span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment) <span class="sc">%&gt;%</span></span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean =</span> <span class="fu">mean</span>(egg_diameter_mm))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  treatment   mean
+  &lt;fct&gt;      &lt;dbl&gt;
+1 EtOH80      2.01
+2 EtOH95      1.99
+3 Formalin10  1.95
+4 Iso70       2.11</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb87-4"><a href="#cb87-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># PREP: Put categories in order small to large</span></span>
+<span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">treatment =</span> <span class="fu">fct_reorder</span>(treatment, egg_diameter_mm, <span class="at">.fun =</span> <span class="st">'mean'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> egg_diameter_mm)) <span class="sc">+</span></span>
+<span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 1: Individual eggs colored by individual</span></span>
+<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">as.factor</span>(ind_num)), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 2: Boxplots</span></span>
+<span id="cb87-12"><a href="#cb87-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, </span>
+<span id="cb87-13"><a href="#cb87-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">outlier.shape =</span> <span class="cn">NA</span>, </span>
+<span id="cb87-14"><a href="#cb87-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">width =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb87-15"><a href="#cb87-15" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb87-16"><a href="#cb87-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 3: Estimated marginal means</span></span>
+<span id="cb87-17"><a href="#cb87-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_emmeans, <span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> emmean),</span>
+<span id="cb87-18"><a href="#cb87-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">shape =</span> <span class="dv">18</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb87-19"><a href="#cb87-19" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb87-20"><a href="#cb87-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 4: Labels &amp; theme customization</span></span>
+<span id="cb87-21"><a href="#cb87-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb87-22"><a href="#cb87-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Effect of Preservation Treatment on Egg Diameter"</span>,</span>
+<span id="cb87-23"><a href="#cb87-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Red diamonds represent model-estimated marginal means"</span>,</span>
+<span id="cb87-24"><a href="#cb87-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Treatment Group"</span>,</span>
+<span id="cb87-25"><a href="#cb87-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Egg Diameter (mm)"</span>,</span>
+<span id="cb87-26"><a href="#cb87-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Individual ID (Block)"</span></span>
+<span id="cb87-27"><a href="#cb87-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb87-28"><a href="#cb87-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span> </span>
+<span id="cb87-29"><a href="#cb87-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb87-30"><a href="#cb87-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb87-31"><a href="#cb87-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray30"</span>),</span>
+<span id="cb87-32"><a href="#cb87-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span></span>
+<span id="cb87-33"><a href="#cb87-33" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="walkthrough_emmy_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The R package <code>{ggokabeito}</code> uses the well-known accessible palette ‘Okabe-Ito’. By default, it uses colors in the regular order of the palette, but you can explicitly tell R which colors to use if you want to.</p>
+<p>To preview what hex codes would look like, you can use <code>show_col()</code> from the R package <code>{scales}</code>.</p>
+</div>
+</div>
+<!-- -->
+
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+        for (let i=0; i<detailsSrc.length; i++) {
+          const details = detailsSrc[i].parentElement;
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb88" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data Analysis"</span></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> </span></span>
+<span id="cb88-4"><a href="#cb88-4" aria-hidden="true" tabindex="-1"></a><span class="co">  - name: Beau Coomer</span></span>
+<span id="cb88-5"><a href="#cb88-5" aria-hidden="true" tabindex="-1"></a><span class="co">  - name: Emmy Delekta</span></span>
+<span id="cb88-6"><a href="#cb88-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span><span class="co"> </span></span>
+<span id="cb88-7"><a href="#cb88-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb88-8"><a href="#cb88-8" aria-hidden="true" tabindex="-1"></a><span class="co">    theme: minty</span></span>
+<span id="cb88-9"><a href="#cb88-9" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb88-10"><a href="#cb88-10" aria-hidden="true" tabindex="-1"></a><span class="co">    toc-depth: 2</span></span>
+<span id="cb88-11"><a href="#cb88-11" aria-hidden="true" tabindex="-1"></a><span class="co">    highlight-style: github</span></span>
+<span id="cb88-12"><a href="#cb88-12" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb88-13"><a href="#cb88-13" aria-hidden="true" tabindex="-1"></a><span class="co">    fig-align: center</span></span>
+<span id="cb88-14"><a href="#cb88-14" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> source</span></span>
+<span id="cb88-15"><a href="#cb88-15" aria-hidden="true" tabindex="-1"></a><span class="an">editor_options:</span><span class="co"> </span></span>
+<span id="cb88-16"><a href="#cb88-16" aria-hidden="true" tabindex="-1"></a><span class="co">  chunk_output_type: console</span></span>
+<span id="cb88-17"><a href="#cb88-17" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb88-18"><a href="#cb88-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-19"><a href="#cb88-19" aria-hidden="true" tabindex="-1"></a><span class="fu"># Importing Data</span></span>
+<span id="cb88-20"><a href="#cb88-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-21"><a href="#cb88-21" aria-hidden="true" tabindex="-1"></a>You always want to load your packages at the top of your script/ document.</span>
+<span id="cb88-22"><a href="#cb88-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-25"><a href="#cb88-25" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-26"><a href="#cb88-26" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb88-27"><a href="#cb88-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-28"><a href="#cb88-28" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb88-29"><a href="#cb88-29" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readr)</span>
+<span id="cb88-30"><a href="#cb88-30" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-31"><a href="#cb88-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-32"><a href="#cb88-32" aria-hidden="true" tabindex="-1"></a>You can have functions from R packages (like <span class="in">`dplyr`</span>), but you can also write R functions yourself. Load the custom function <span class="co">[</span><span class="ot">clean_keyence_csv</span><span class="co">](custom_functions/clean_keyence_csv.R)</span>...</span>
+<span id="cb88-33"><a href="#cb88-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-36"><a href="#cb88-36" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-37"><a href="#cb88-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Load clean_keyence_csv()</span></span>
+<span id="cb88-38"><a href="#cb88-38" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">"custom_functions/clean_keyence_csv.R"</span>) </span>
+<span id="cb88-39"><a href="#cb88-39" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-40"><a href="#cb88-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-41"><a href="#cb88-41" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dataset 1: Egg Measures</span></span>
+<span id="cb88-42"><a href="#cb88-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-43"><a href="#cb88-43" aria-hidden="true" tabindex="-1"></a>Use the custom function that was imported like this...</span>
+<span id="cb88-44"><a href="#cb88-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-45"><a href="#cb88-45" aria-hidden="true" tabindex="-1"></a><span class="ss">1.  </span>Get your file names</span>
+<span id="cb88-46"><a href="#cb88-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-49"><a href="#cb88-49" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-50"><a href="#cb88-50" aria-hidden="true" tabindex="-1"></a>file_paths <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> <span class="st">"data/raw"</span>, <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">.csv$"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb88-51"><a href="#cb88-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-52"><a href="#cb88-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-53"><a href="#cb88-53" aria-hidden="true" tabindex="-1"></a><span class="ss">2.  </span>Process it all into one tibble (similar to data.frame)</span>
+<span id="cb88-54"><a href="#cb88-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-57"><a href="#cb88-57" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-58"><a href="#cb88-58" aria-hidden="true" tabindex="-1"></a>  compiled_data <span class="ot">&lt;-</span> <span class="fu">suppressWarnings</span>(</span>
+<span id="cb88-59"><a href="#cb88-59" aria-hidden="true" tabindex="-1"></a>    file_paths <span class="sc">%&gt;%</span></span>
+<span id="cb88-60"><a href="#cb88-60" aria-hidden="true" tabindex="-1"></a>      <span class="fu">set_names</span>(<span class="fu">basename</span>(.)) <span class="sc">%&gt;%</span></span>
+<span id="cb88-61"><a href="#cb88-61" aria-hidden="true" tabindex="-1"></a>      <span class="fu">map</span>(clean_keyence_csv) <span class="sc">%&gt;%</span></span>
+<span id="cb88-62"><a href="#cb88-62" aria-hidden="true" tabindex="-1"></a>      <span class="fu">list_rbind</span>(<span class="at">names_to =</span> <span class="st">"source_file"</span>)</span>
+<span id="cb88-63"><a href="#cb88-63" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb88-64"><a href="#cb88-64" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-65"><a href="#cb88-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-66"><a href="#cb88-66" aria-hidden="true" tabindex="-1"></a>Then, you can check out your result like this...</span>
+<span id="cb88-67"><a href="#cb88-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-70"><a href="#cb88-70" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-71"><a href="#cb88-71" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb88-72"><a href="#cb88-72" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(compiled_data)</span>
+<span id="cb88-73"><a href="#cb88-73" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-74"><a href="#cb88-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-75"><a href="#cb88-75" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dataset 2: Body Measures</span></span>
+<span id="cb88-76"><a href="#cb88-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-79"><a href="#cb88-79" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-80"><a href="#cb88-80" aria-hidden="true" tabindex="-1"></a>body_measures <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/crayfish_body_measurements.csv"</span>)</span>
+<span id="cb88-81"><a href="#cb88-81" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-82"><a href="#cb88-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-83"><a href="#cb88-83" aria-hidden="true" tabindex="-1"></a><span class="fu"># Cleaning Data</span></span>
+<span id="cb88-84"><a href="#cb88-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-85"><a href="#cb88-85" aria-hidden="true" tabindex="-1"></a>First, subset the <span class="in">`compiled_data`</span> object to drop irrelevant columns. The <span class="in">`!`</span> tells <span class="in">`select()`</span> to keep everything *except* the columns listed. </span>
+<span id="cb88-86"><a href="#cb88-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-89"><a href="#cb88-89" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-90"><a href="#cb88-90" aria-hidden="true" tabindex="-1"></a>clean_csvs<span class="ot">&lt;-</span>compiled_data <span class="sc">%&gt;%</span></span>
+<span id="cb88-91"><a href="#cb88-91" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">!</span><span class="fu">c</span>(Measure,date_saved))</span>
+<span id="cb88-92"><a href="#cb88-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-93"><a href="#cb88-93" aria-hidden="true" tabindex="-1"></a><span class="fu">call</span>(<span class="st">"clean_csvs"</span>) <span class="co"># What is call() for??? -Emmy</span></span>
+<span id="cb88-94"><a href="#cb88-94" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-95"><a href="#cb88-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-96"><a href="#cb88-96" aria-hidden="true" tabindex="-1"></a>It's best practice to have all names in R to be easily type-able. We can accomplish this by...</span>
+<span id="cb88-97"><a href="#cb88-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-98"><a href="#cb88-98" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>No punctuation at the beginning or end of a string</span>
+<span id="cb88-99"><a href="#cb88-99" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Using all lowercase</span>
+<span id="cb88-100"><a href="#cb88-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-101"><a href="#cb88-101" aria-hidden="true" tabindex="-1"></a>You can do a direct rename of columns in R by <span class="in">`rename(new_name = old_name)`</span>. If needing to change a bunch of column names, use <span class="in">`rename_with()`</span>.</span>
+<span id="cb88-102"><a href="#cb88-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-105"><a href="#cb88-105" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-106"><a href="#cb88-106" aria-hidden="true" tabindex="-1"></a>clean_csvs<span class="ot">&lt;-</span>clean_csvs <span class="sc">%&gt;%</span></span>
+<span id="cb88-107"><a href="#cb88-107" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">egg_no=</span>No.) <span class="sc">%&gt;%</span></span>
+<span id="cb88-108"><a href="#cb88-108" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename_with</span>(tolower)</span>
+<span id="cb88-109"><a href="#cb88-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-110"><a href="#cb88-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-111"><a href="#cb88-111" aria-hidden="true" tabindex="-1"></a>All of the important identifying information is kept in the file names. </span>
+<span id="cb88-112"><a href="#cb88-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-115"><a href="#cb88-115" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-116"><a href="#cb88-116" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb88-117"><a href="#cb88-117" aria-hidden="true" tabindex="-1"></a><span class="co"># One way to split file names into usable chunks...</span></span>
+<span id="cb88-118"><a href="#cb88-118" aria-hidden="true" tabindex="-1"></a><span class="fu">str_split_fixed</span>(clean_csvs<span class="sc">$</span>source_file,<span class="st">"</span><span class="sc">\\</span><span class="st">-"</span>,<span class="dv">4</span>)</span>
+<span id="cb88-119"><a href="#cb88-119" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-120"><a href="#cb88-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-123"><a href="#cb88-123" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-124"><a href="#cb88-124" aria-hidden="true" tabindex="-1"></a><span class="co"># Better way to split the file names into usable chunks + keep the info</span></span>
+<span id="cb88-125"><a href="#cb88-125" aria-hidden="true" tabindex="-1"></a><span class="co"># -- in the data frame</span></span>
+<span id="cb88-126"><a href="#cb88-126" aria-hidden="true" tabindex="-1"></a>tmp<span class="ot">&lt;-</span>clean_csvs <span class="sc">%&gt;%</span></span>
+<span id="cb88-127"><a href="#cb88-127" aria-hidden="true" tabindex="-1"></a>  <span class="fu">separate_wider_delim</span>(<span class="at">cols =</span> source_file,<span class="at">delim =</span> <span class="st">"-"</span>,<span class="at">names =</span> <span class="fu">c</span>(<span class="st">"species"</span>,<span class="st">"treatment"</span>,<span class="st">"ind_num"</span>,<span class="cn">NA</span>))</span>
+<span id="cb88-128"><a href="#cb88-128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-129"><a href="#cb88-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-132"><a href="#cb88-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-133"><a href="#cb88-133" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb88-134"><a href="#cb88-134" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(tmp)</span>
+<span id="cb88-135"><a href="#cb88-135" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-136"><a href="#cb88-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-137"><a href="#cb88-137" aria-hidden="true" tabindex="-1"></a>Sometimes R will yell at if the data type isn't appropraite. You can check the data type of anything using <span class="in">`class()`</span>.</span>
+<span id="cb88-138"><a href="#cb88-138" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-141"><a href="#cb88-141" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-142"><a href="#cb88-142" aria-hidden="true" tabindex="-1"></a><span class="co"># Works on objects</span></span>
+<span id="cb88-143"><a href="#cb88-143" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(tmp)</span>
+<span id="cb88-144"><a href="#cb88-144" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-145"><a href="#cb88-145" aria-hidden="true" tabindex="-1"></a><span class="co"># And it can also work on parts of the object</span></span>
+<span id="cb88-146"><a href="#cb88-146" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(tmp<span class="sc">$</span>result)</span>
+<span id="cb88-147"><a href="#cb88-147" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-148"><a href="#cb88-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-149"><a href="#cb88-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-150"><a href="#cb88-150" aria-hidden="true" tabindex="-1"></a>If the class isn't what it should be, you can fix it on the fly using one of the many <span class="in">`as.___()`</span> functions. Just know that sometimes, it is not going to work and it may not always be appropriate!</span>
+<span id="cb88-151"><a href="#cb88-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-154"><a href="#cb88-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-155"><a href="#cb88-155" aria-hidden="true" tabindex="-1"></a>tmp<span class="ot">&lt;-</span>tmp <span class="sc">%&gt;%</span></span>
+<span id="cb88-156"><a href="#cb88-156" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">result=</span><span class="fu">as.numeric</span>(result))</span>
+<span id="cb88-157"><a href="#cb88-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-158"><a href="#cb88-158" aria-hidden="true" tabindex="-1"></a><span class="co"># "$result" is ambiguous and could be misleading, so rename for clarity</span></span>
+<span id="cb88-159"><a href="#cb88-159" aria-hidden="true" tabindex="-1"></a>tmp<span class="ot">&lt;-</span>tmp <span class="sc">%&gt;%</span></span>
+<span id="cb88-160"><a href="#cb88-160" aria-hidden="true" tabindex="-1"></a><span class="fu">rename</span>(<span class="at">egg_diameter_mm=</span>result)</span>
+<span id="cb88-161"><a href="#cb88-161" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-162"><a href="#cb88-162" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-165"><a href="#cb88-165" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-166"><a href="#cb88-166" aria-hidden="true" tabindex="-1"></a><span class="co"># Make object to use for summary stats</span></span>
+<span id="cb88-167"><a href="#cb88-167" aria-hidden="true" tabindex="-1"></a>df_summaries <span class="ot">&lt;-</span> <span class="fu">unite</span>(tmp,treatment,ind_num,<span class="at">col =</span> <span class="st">"treatment_ind_number"</span>,<span class="at">sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb88-168"><a href="#cb88-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-169"><a href="#cb88-169" aria-hidden="true" tabindex="-1"></a><span class="co"># Make data that keeps those columns separate</span></span>
+<span id="cb88-170"><a href="#cb88-170" aria-hidden="true" tabindex="-1"></a>df_analysis <span class="ot">&lt;-</span> tmp</span>
+<span id="cb88-171"><a href="#cb88-171" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-172"><a href="#cb88-172" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-173"><a href="#cb88-173" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-174"><a href="#cb88-174" aria-hidden="true" tabindex="-1"></a><span class="fu"># Summary Statistics</span></span>
+<span id="cb88-175"><a href="#cb88-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-176"><a href="#cb88-176" aria-hidden="true" tabindex="-1"></a><span class="fu">## Average egg diameter</span></span>
+<span id="cb88-177"><a href="#cb88-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-180"><a href="#cb88-180" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-181"><a href="#cb88-181" aria-hidden="true" tabindex="-1"></a>egg_diameter_avgs<span class="ot">&lt;-</span>df_summaries <span class="sc">%&gt;%</span></span>
+<span id="cb88-182"><a href="#cb88-182" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment_ind_number) <span class="sc">%&gt;%</span></span>
+<span id="cb88-183"><a href="#cb88-183" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">avg =</span> <span class="fu">mean</span>(egg_diameter_mm))</span>
+<span id="cb88-184"><a href="#cb88-184" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-185"><a href="#cb88-185" aria-hidden="true" tabindex="-1"></a>egg_diameter_avgs</span>
+<span id="cb88-186"><a href="#cb88-186" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-187"><a href="#cb88-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-188"><a href="#cb88-188" aria-hidden="true" tabindex="-1"></a><span class="fu">## Eggs per individual across treatments</span></span>
+<span id="cb88-191"><a href="#cb88-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-192"><a href="#cb88-192" aria-hidden="true" tabindex="-1"></a>ind_egg_counts<span class="ot">&lt;-</span>df_summaries <span class="sc">%&gt;%</span></span>
+<span id="cb88-193"><a href="#cb88-193" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment_ind_number) <span class="sc">%&gt;%</span></span>
+<span id="cb88-194"><a href="#cb88-194" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">egg_count =</span> <span class="fu">n</span>())</span>
+<span id="cb88-195"><a href="#cb88-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-196"><a href="#cb88-196" aria-hidden="true" tabindex="-1"></a>ind_egg_counts</span>
+<span id="cb88-197"><a href="#cb88-197" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-198"><a href="#cb88-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-199"><a href="#cb88-199" aria-hidden="true" tabindex="-1"></a><span class="fu"># Analysis</span></span>
+<span id="cb88-200"><a href="#cb88-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-201"><a href="#cb88-201" aria-hidden="true" tabindex="-1"></a><span class="fu">## Experimental Design</span></span>
+<span id="cb88-202"><a href="#cb88-202" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-203"><a href="#cb88-203" aria-hidden="true" tabindex="-1"></a>**10** *Procambarus clarkii* individuals, each with eggs split across **4** preservation treatments (EtOH80, EtOH95, Iso70, Formalin10). There are not necessarily the same number of eggs placed in each preservation treatment from a given individual.</span>
+<span id="cb88-204"><a href="#cb88-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-205"><a href="#cb88-205" aria-hidden="true" tabindex="-1"></a>You can check to make sure the data we're using matches what it should be...</span>
+<span id="cb88-206"><a href="#cb88-206" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-209"><a href="#cb88-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-210"><a href="#cb88-210" aria-hidden="true" tabindex="-1"></a><span class="co">#| echo: false</span></span>
+<span id="cb88-211"><a href="#cb88-211" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-212"><a href="#cb88-212" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of individuals</span></span>
+<span id="cb88-213"><a href="#cb88-213" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(df_analysis<span class="sc">$</span>ind_num))</span>
+<span id="cb88-214"><a href="#cb88-214" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-215"><a href="#cb88-215" aria-hidden="true" tabindex="-1"></a><span class="co"># List of treatments</span></span>
+<span id="cb88-216"><a href="#cb88-216" aria-hidden="true" tabindex="-1"></a><span class="fu">unique</span>(df_analysis<span class="sc">$</span>treatment)</span>
+<span id="cb88-217"><a href="#cb88-217" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-218"><a href="#cb88-218" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-219"><a href="#cb88-219" aria-hidden="true" tabindex="-1"></a>The variables of this study are...</span>
+<span id="cb88-220"><a href="#cb88-220" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-221"><a href="#cb88-221" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Type <span class="pp">|</span> Variable(s)  <span class="pp">|</span></span>
+<span id="cb88-222"><a href="#cb88-222" aria-hidden="true" tabindex="-1"></a><span class="pp">| ----</span> <span class="pp">| ------------</span> <span class="pp">|</span></span>
+<span id="cb88-223"><a href="#cb88-223" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Independent <span class="pp">|</span> Treatment, Individual* <span class="pp">|</span> </span>
+<span id="cb88-224"><a href="#cb88-224" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Dependent <span class="pp">|</span> Egg size (diameter in mm) <span class="pp">|</span> </span>
+<span id="cb88-225"><a href="#cb88-225" aria-hidden="true" tabindex="-1"></a><span class="pp">|</span> Controlled <span class="pp">|</span> Species, Individual* <span class="pp">|</span> </span>
+<span id="cb88-226"><a href="#cb88-226" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-227"><a href="#cb88-227" aria-hidden="true" tabindex="-1"></a>The <span class="co">[</span><span class="ot">assumptions</span><span class="co">](https://www.statology.org/parametric-tests-assumptions/)</span> for most parametric tests are:</span>
+<span id="cb88-228"><a href="#cb88-228" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-229"><a href="#cb88-229" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Normality</span>
+<span id="cb88-230"><a href="#cb88-230" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Equal variance</span>
+<span id="cb88-231"><a href="#cb88-231" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Independence - data is sampled randomly and independently (not biased)</span>
+<span id="cb88-232"><a href="#cb88-232" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>No outliers (no extremes)</span>
+<span id="cb88-233"><a href="#cb88-233" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-234"><a href="#cb88-234" aria-hidden="true" tabindex="-1"></a>Our experimental design violates the assumption of independence --- there are multiple egg measurements per individual. We have **repeated measures**, which, if ignored, undermines the statistical sanctity of the results (i.e., your interpretation would not be valid if you just ignore it). </span>
+<span id="cb88-235"><a href="#cb88-235" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-236"><a href="#cb88-236" aria-hidden="true" tabindex="-1"></a>To account for repeated measures, you can explicitly model the correlation between that of the dependent variable (egg size (continuous)) and the source of the repeated measure (individual) using a **linear mixed-effect model** or **repeated-measures ANOVA**. </span>
+<span id="cb88-237"><a href="#cb88-237" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-238"><a href="#cb88-238" aria-hidden="true" tabindex="-1"></a>Since the eggs from each individual were spread across the four treatments, the experimental design is **crossed**. There were not an equal number of eggs per individual/ per treatment, it is also **unbalanced**.</span>
+<span id="cb88-239"><a href="#cb88-239" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-240"><a href="#cb88-240" aria-hidden="true" tabindex="-1"></a><span class="fu">## Linear Mixed-Effect Model (LME)</span></span>
+<span id="cb88-241"><a href="#cb88-241" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-242"><a href="#cb88-242" aria-hidden="true" tabindex="-1"></a>The R package <span class="in">`{lme4}`</span> is widely used for linear mixed effect modelling. The base R function <span class="in">`lm()`</span> is for linear models, but it can't handle experimental designs with random factors, so that's why we need <span class="in">`{lme4}`</span>.</span>
+<span id="cb88-243"><a href="#cb88-243" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-244"><a href="#cb88-244" aria-hidden="true" tabindex="-1"></a>There are a couple considerations in the <span class="in">`lmer()`</span> function that we'll want to overload. The R package <span class="in">`{lmerTest}`</span> does this, so we'll load it too.</span>
+<span id="cb88-245"><a href="#cb88-245" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-248"><a href="#cb88-248" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-249"><a href="#cb88-249" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb88-250"><a href="#cb88-250" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb88-251"><a href="#cb88-251" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb88-252"><a href="#cb88-252" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span>
+<span id="cb88-253"><a href="#cb88-253" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-254"><a href="#cb88-254" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-255"><a href="#cb88-255" aria-hidden="true" tabindex="-1"></a>::: {.callout-tip collapse="true" title="Learn more about these models!"}</span>
+<span id="cb88-256"><a href="#cb88-256" aria-hidden="true" tabindex="-1"></a>You can learn more about linear models in Chapter 18 of *The Analysis of Biological Data* by Whitlock and Schluter (3rd Edition, ISBN-10: 131922623X) --- <span class="co">[</span><span class="ot">(R Code for Examples)</span><span class="co">](https://whitlockschluter3e.zoology.ubc.ca/RExamples/Rcode_Chapter_18.html)</span>. </span>
+<span id="cb88-257"><a href="#cb88-257" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-258"><a href="#cb88-258" aria-hidden="true" tabindex="-1"></a>Dynamic Ecology has a interesting blog post on effects... <span class="co">[</span><span class="ot">Is it a fixed or random effect?</span><span class="co">](https://dynamicecology.wordpress.com/2015/11/04/is-it-a-fixed-or-random-effect/)</span></span>
+<span id="cb88-259"><a href="#cb88-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-260"><a href="#cb88-260" aria-hidden="true" tabindex="-1"></a>There's also a great chapter on <span class="co">[</span><span class="ot">**Linear Mixed Models** from a Washington U course</span><span class="co">](https://courses.washington.edu/psy524a/_book/linear-mixed-models.html)</span>.</span>
+<span id="cb88-261"><a href="#cb88-261" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb88-262"><a href="#cb88-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-263"><a href="#cb88-263" aria-hidden="true" tabindex="-1"></a>For the model, the user defines the response, fixed effect, and random effect(s). </span>
+<span id="cb88-264"><a href="#cb88-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-265"><a href="#cb88-265" aria-hidden="true" tabindex="-1"></a>$$\mathrm{Egg Diameter}_{ij} = \mathrm{Treatment}_i + (1| \mathrm{Individual}_j)$$</span>
+<span id="cb88-266"><a href="#cb88-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-267"><a href="#cb88-267" aria-hidden="true" tabindex="-1"></a>Since every individual has eggs across all four treatments, the model can cleanly separate the effect of the treatment from the unique characters of the individual. <span class="in">`lmer`</span> uses **maximum likelihood** (ML) estimates that naturally weight individuals with more eggs heavier for calculating individual traits while still accurately calculating the overall effect of treatment. The model also pulls/ "shrinks" extreme averages toward the global mean, which prevents a single individual with few eggs from potentially skewing the result.</span>
+<span id="cb88-268"><a href="#cb88-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-271"><a href="#cb88-271" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-272"><a href="#cb88-272" aria-hidden="true" tabindex="-1"></a>df_analysis<span class="sc">$</span>ind_num <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df_analysis<span class="sc">$</span>ind_num)</span>
+<span id="cb88-273"><a href="#cb88-273" aria-hidden="true" tabindex="-1"></a>df_analysis<span class="sc">$</span>treatment <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(df_analysis<span class="sc">$</span>treatment)</span>
+<span id="cb88-274"><a href="#cb88-274" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-275"><a href="#cb88-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-278"><a href="#cb88-278" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-279"><a href="#cb88-279" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the model</span></span>
+<span id="cb88-280"><a href="#cb88-280" aria-hidden="true" tabindex="-1"></a>mod_full <span class="ot">&lt;-</span> <span class="fu">lmer</span>(egg_diameter_mm <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ind_num) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>treatment<span class="sc">:</span>ind_num), <span class="at">data =</span> df_analysis)</span>
+<span id="cb88-281"><a href="#cb88-281" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-282"><a href="#cb88-282" aria-hidden="true" tabindex="-1"></a><span class="co"># View the result</span></span>
+<span id="cb88-283"><a href="#cb88-283" aria-hidden="true" tabindex="-1"></a>mod_full</span>
+<span id="cb88-284"><a href="#cb88-284" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-285"><a href="#cb88-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-286"><a href="#cb88-286" aria-hidden="true" tabindex="-1"></a><span class="fu">### Overall Treatment Effect</span></span>
+<span id="cb88-287"><a href="#cb88-287" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-288"><a href="#cb88-288" aria-hidden="true" tabindex="-1"></a>Passing the output of <span class="in">`lmer()`</span> to <span class="in">`anova()`</span> gives you the ANOVA table.</span>
+<span id="cb88-289"><a href="#cb88-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-292"><a href="#cb88-292" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-293"><a href="#cb88-293" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_full)</span>
+<span id="cb88-294"><a href="#cb88-294" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-295"><a href="#cb88-295" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-296"><a href="#cb88-296" aria-hidden="true" tabindex="-1"></a>P &lt; 0.05, so **treatment significantly affects the egg diameter**, but it does not give more information as to *which* treatments differ. We'll need to do pairwise comparisons to figure that out.</span>
+<span id="cb88-297"><a href="#cb88-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-298"><a href="#cb88-298" aria-hidden="true" tabindex="-1"></a><span class="fu">### Pairwise Comparisons</span></span>
+<span id="cb88-299"><a href="#cb88-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-300"><a href="#cb88-300" aria-hidden="true" tabindex="-1"></a>The treatment is significant, so we can use the R package <span class="in">`{emmeans}`</span> (estimated marginal means). </span>
+<span id="cb88-301"><a href="#cb88-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-304"><a href="#cb88-304" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-305"><a href="#cb88-305" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb88-306"><a href="#cb88-306" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb88-307"><a href="#cb88-307" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span>
+<span id="cb88-308"><a href="#cb88-308" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-309"><a href="#cb88-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-312"><a href="#cb88-312" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-313"><a href="#cb88-313" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb88-314"><a href="#cb88-314" aria-hidden="true" tabindex="-1"></a>emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mod_full, <span class="sc">~</span> treatment)</span>
+<span id="cb88-315"><a href="#cb88-315" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-316"><a href="#cb88-316" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-319"><a href="#cb88-319" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-320"><a href="#cb88-320" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(emm, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb88-321"><a href="#cb88-321" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-322"><a href="#cb88-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-323"><a href="#cb88-323" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb88-324"><a href="#cb88-324" aria-hidden="true" tabindex="-1"></a>Look at <span class="in">`p.value`</span> in the output. Any value under 0.05 means the two treatments (in <span class="in">`contrast`</span>) are statistically different.</span>
+<span id="cb88-325"><a href="#cb88-325" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb88-326"><a href="#cb88-326" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-327"><a href="#cb88-327" aria-hidden="true" tabindex="-1"></a>Mean egg diameter differed in all preservative types.</span>
+<span id="cb88-328"><a href="#cb88-328" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-331"><a href="#cb88-331" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-332"><a href="#cb88-332" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(emm)</span>
+<span id="cb88-333"><a href="#cb88-333" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-334"><a href="#cb88-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-335"><a href="#cb88-335" aria-hidden="true" tabindex="-1"></a>Linear mixed models assume the residuals are normally distributed and have equal variance. The study design is unbalanced, so verifying assumptions is even more important.</span>
+<span id="cb88-336"><a href="#cb88-336" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-339"><a href="#cb88-339" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-340"><a href="#cb88-340" aria-hidden="true" tabindex="-1"></a><span class="co"># Check variance</span></span>
+<span id="cb88-341"><a href="#cb88-341" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_full)</span>
+<span id="cb88-342"><a href="#cb88-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-343"><a href="#cb88-343" aria-hidden="true" tabindex="-1"></a><span class="co"># Visual check for normality of residuals</span></span>
+<span id="cb88-344"><a href="#cb88-344" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(<span class="fu">residuals</span>(mod_full), <span class="at">main =</span> <span class="st">"Q-Q Plot of Residuals"</span>)</span>
+<span id="cb88-345"><a href="#cb88-345" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(<span class="fu">residuals</span>(mod_full), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb88-346"><a href="#cb88-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-347"><a href="#cb88-347" aria-hidden="true" tabindex="-1"></a><span class="co"># Statistical check for normality of residuals</span></span>
+<span id="cb88-348"><a href="#cb88-348" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(<span class="fu">residuals</span>(mod_full))</span>
+<span id="cb88-349"><a href="#cb88-349" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-350"><a href="#cb88-350" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-351"><a href="#cb88-351" aria-hidden="true" tabindex="-1"></a>The residuals are falling pretty darn far from the line, especially on the lower end. Since we are dealing with linear measurement data, this kind of normality violation is kind of expected and we can try to transform the data and re-run the model...</span>
+<span id="cb88-352"><a href="#cb88-352" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-355"><a href="#cb88-355" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-356"><a href="#cb88-356" aria-hidden="true" tabindex="-1"></a>df_analysis<span class="sc">$</span>log_egg_diameter_mm <span class="ot">&lt;-</span> <span class="fu">log</span>(df_analysis<span class="sc">$</span>egg_diameter_mm) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb88-357"><a href="#cb88-357" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-358"><a href="#cb88-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-361"><a href="#cb88-361" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-362"><a href="#cb88-362" aria-hidden="true" tabindex="-1"></a>mod_log <span class="ot">&lt;-</span> <span class="fu">lmer</span>(log_egg_diameter_mm <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ind_num) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>treatment<span class="sc">:</span>ind_num), <span class="at">data =</span> df_analysis)</span>
+<span id="cb88-363"><a href="#cb88-363" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-364"><a href="#cb88-364" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-365"><a href="#cb88-365" aria-hidden="true" tabindex="-1"></a>Now we can check the assumptions again before moving forward...</span>
+<span id="cb88-366"><a href="#cb88-366" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-369"><a href="#cb88-369" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-370"><a href="#cb88-370" aria-hidden="true" tabindex="-1"></a><span class="co"># Check variance</span></span>
+<span id="cb88-371"><a href="#cb88-371" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_log)</span>
+<span id="cb88-372"><a href="#cb88-372" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-373"><a href="#cb88-373" aria-hidden="true" tabindex="-1"></a><span class="co"># Check normality of residuals</span></span>
+<span id="cb88-374"><a href="#cb88-374" aria-hidden="true" tabindex="-1"></a><span class="fu">qqnorm</span>(<span class="fu">residuals</span>(mod_log), <span class="at">main =</span> <span class="st">"Q-Q Plot of Residuals (log-transformation)"</span>)</span>
+<span id="cb88-375"><a href="#cb88-375" aria-hidden="true" tabindex="-1"></a><span class="fu">qqline</span>(<span class="fu">residuals</span>(mod_log), <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb88-376"><a href="#cb88-376" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-377"><a href="#cb88-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-378"><a href="#cb88-378" aria-hidden="true" tabindex="-1"></a>Still, normality is not fantastic, but it's slightly better.</span>
+<span id="cb88-379"><a href="#cb88-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-380"><a href="#cb88-380" aria-hidden="true" tabindex="-1"></a>Another assumption is equal variances. We can check this visually, or with a statistical test.</span>
+<span id="cb88-381"><a href="#cb88-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-384"><a href="#cb88-384" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-385"><a href="#cb88-385" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb88-386"><a href="#cb88-386" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb88-387"><a href="#cb88-387" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb88-388"><a href="#cb88-388" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-389"><a href="#cb88-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-392"><a href="#cb88-392" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-393"><a href="#cb88-393" aria-hidden="true" tabindex="-1"></a><span class="co"># Visual Check: Points should be random cloud/ smear</span></span>
+<span id="cb88-394"><a href="#cb88-394" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mod_log, <span class="at">type =</span> <span class="fu">c</span>(<span class="st">"p"</span>, <span class="st">"smooth"</span>),</span>
+<span id="cb88-395"><a href="#cb88-395" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Residuals vs Fitted Values"</span>,</span>
+<span id="cb88-396"><a href="#cb88-396" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab =</span> <span class="st">"Fitted Values"</span>, <span class="at">ylab =</span> <span class="st">"Residuals"</span>)</span>
+<span id="cb88-397"><a href="#cb88-397" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-398"><a href="#cb88-398" aria-hidden="true" tabindex="-1"></a><span class="co"># Levene's Test: p &gt; 0.05 means variance is equal across groups (treatments)</span></span>
+<span id="cb88-399"><a href="#cb88-399" aria-hidden="true" tabindex="-1"></a><span class="fu">leveneTest</span>(<span class="fu">residuals</span>(mod_log) <span class="sc">~</span> df_analysis<span class="sc">$</span>treatment)</span>
+<span id="cb88-400"><a href="#cb88-400" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-401"><a href="#cb88-401" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-402"><a href="#cb88-402" aria-hidden="true" tabindex="-1"></a>Variances are not equal, so we can either proceed with a huge amount of caution in interpretation or start to use conservative approaches. </span>
+<span id="cb88-403"><a href="#cb88-403" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-406"><a href="#cb88-406" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-407"><a href="#cb88-407" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mod_log)</span>
+<span id="cb88-408"><a href="#cb88-408" aria-hidden="true" tabindex="-1"></a>mod_log.out <span class="ot">&lt;-</span> <span class="fu">summary</span>(mod_log)</span>
+<span id="cb88-409"><a href="#cb88-409" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-410"><a href="#cb88-410" aria-hidden="true" tabindex="-1"></a>total_variance <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">as_tibble</span>(mod_log.out<span class="sc">$</span>varcor)<span class="sc">$</span>vcov)</span>
+<span id="cb88-411"><a href="#cb88-411" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-412"><a href="#cb88-412" aria-hidden="true" tabindex="-1"></a>ind_variance <span class="ot">&lt;-</span> <span class="fu">as_tibble</span>(mod_log.out<span class="sc">$</span>varcor) <span class="sc">%&gt;%</span></span>
+<span id="cb88-413"><a href="#cb88-413" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(grp <span class="sc">==</span> <span class="st">"ind_num"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb88-414"><a href="#cb88-414" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(vcov)</span>
+<span id="cb88-415"><a href="#cb88-415" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-416"><a href="#cb88-416" aria-hidden="true" tabindex="-1"></a><span class="co"># Interclass Correlation Coefficient (ICC)</span></span>
+<span id="cb88-417"><a href="#cb88-417" aria-hidden="true" tabindex="-1"></a>ind_variance <span class="sc">/</span> total_variance</span>
+<span id="cb88-418"><a href="#cb88-418" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-419"><a href="#cb88-419" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-420"><a href="#cb88-420" aria-hidden="true" tabindex="-1"></a>48.8% of all variation in egg diameter is simply due to differences between individuals...</span>
+<span id="cb88-421"><a href="#cb88-421" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-424"><a href="#cb88-424" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-425"><a href="#cb88-425" aria-hidden="true" tabindex="-1"></a>emm_log <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(mod_log, <span class="sc">~</span> treatment)</span>
+<span id="cb88-426"><a href="#cb88-426" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(emm_log, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb88-427"><a href="#cb88-427" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-428"><a href="#cb88-428" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-429"><a href="#cb88-429" aria-hidden="true" tabindex="-1"></a>All treatments are remain different from one another... and we have the issue of unequal variances.</span>
+<span id="cb88-430"><a href="#cb88-430" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-431"><a href="#cb88-431" aria-hidden="true" tabindex="-1"></a><span class="fu">## Going Further, the Conservative Route</span></span>
+<span id="cb88-432"><a href="#cb88-432" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-433"><a href="#cb88-433" aria-hidden="true" tabindex="-1"></a>Having all the treatments be statistically significant from one another is just down right weird. We know that the residuals of the model were skewed, even after the egg diameters were log transformed. Since the normality assumption is violated, the p-values are probably artificially deflated. We need to know if our treatment differences are real, so we can use a **generalized linear mixed model** (GLMM) with a link function.</span>
+<span id="cb88-434"><a href="#cb88-434" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-437"><a href="#cb88-437" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-438"><a href="#cb88-438" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb88-439"><a href="#cb88-439" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: true</span></span>
+<span id="cb88-440"><a href="#cb88-440" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb88-441"><a href="#cb88-441" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb88-442"><a href="#cb88-442" aria-hidden="true" tabindex="-1"></a>robust_mod <span class="ot">&lt;-</span> <span class="fu">glmer</span>(egg_diameter_mm <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ind_num), <span class="at">family =</span> <span class="fu">Gamma</span>(<span class="at">link =</span> <span class="st">"log"</span>), </span>
+<span id="cb88-443"><a href="#cb88-443" aria-hidden="true" tabindex="-1"></a>                    <span class="at">data =</span> df_analysis)</span>
+<span id="cb88-444"><a href="#cb88-444" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb88-445"><a href="#cb88-445" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DHARMa)</span>
+<span id="cb88-446"><a href="#cb88-446" aria-hidden="true" tabindex="-1"></a><span class="fu">Anova</span>(robust_mod, <span class="at">type =</span> <span class="st">"III"</span>)</span>
+<span id="cb88-447"><a href="#cb88-447" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-448"><a href="#cb88-448" aria-hidden="true" tabindex="-1"></a>residuals_sim <span class="ot">&lt;-</span> <span class="fu">simulateResiduals</span>(<span class="at">fittedModel =</span> robust_mod)</span>
+<span id="cb88-449"><a href="#cb88-449" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(residuals_sim)</span>
+<span id="cb88-450"><a href="#cb88-450" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-451"><a href="#cb88-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-452"><a href="#cb88-452" aria-hidden="true" tabindex="-1"></a>::: {.callout-note}</span>
+<span id="cb88-453"><a href="#cb88-453" aria-hidden="true" tabindex="-1"></a>The **Gamma** distribution called from <span class="in">`family =`</span> tells the function to expect the skewed data. It adjusts the standard errors, so the pairwise comparisons might be more realistic. </span>
+<span id="cb88-454"><a href="#cb88-454" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-455"><a href="#cb88-455" aria-hidden="true" tabindex="-1"></a>Read more about link functions on R-bloggers: <span class="co">[</span><span class="ot">Generalized Linear Models understanding the link function</span><span class="co">](https://www.r-bloggers.com/2018/10/generalized-linear-models-understanding-the-link-function/)</span></span>
+<span id="cb88-456"><a href="#cb88-456" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb88-457"><a href="#cb88-457" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-458"><a href="#cb88-458" aria-hidden="true" tabindex="-1"></a><span class="fu">## Data Cleaning Method...</span></span>
+<span id="cb88-459"><a href="#cb88-459" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-460"><a href="#cb88-460" aria-hidden="true" tabindex="-1"></a>It seems like the positive skew could be caused by a handful of outliers that could be damaged eggs, measurement errors, or potentially unviable runts. These outliers can be pulled out of the data set systematically using Cook's distance...</span>
+<span id="cb88-463"><a href="#cb88-463" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-464"><a href="#cb88-464" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("influence.ME")</span></span>
+<span id="cb88-465"><a href="#cb88-465" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(influence.ME)</span>
+<span id="cb88-466"><a href="#cb88-466" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-467"><a href="#cb88-467" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-470"><a href="#cb88-470" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-471"><a href="#cb88-471" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb88-472"><a href="#cb88-472" aria-hidden="true" tabindex="-1"></a><span class="co"># Get influence of each observation</span></span>
+<span id="cb88-473"><a href="#cb88-473" aria-hidden="true" tabindex="-1"></a>infl <span class="ot">&lt;-</span> <span class="fu">influence</span>(mod_full, <span class="at">obs =</span> <span class="cn">TRUE</span>) </span>
+<span id="cb88-474"><a href="#cb88-474" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-475"><a href="#cb88-475" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-476"><a href="#cb88-476" aria-hidden="true" tabindex="-1"></a>:::{.callout-warning}</span>
+<span id="cb88-477"><a href="#cb88-477" aria-hidden="true" tabindex="-1"></a>Running <span class="in">`influence()`</span> takes a looong time. To save time, save it as an RData object (.RDS) with <span class="in">`saveRDS()`</span> and you can use it in the future by loading it with <span class="in">`readRDS()`</span>.</span>
+<span id="cb88-478"><a href="#cb88-478" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb88-479"><a href="#cb88-479" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-482"><a href="#cb88-482" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-483"><a href="#cb88-483" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb88-484"><a href="#cb88-484" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(infl, <span class="at">file =</span> <span class="st">"data/rds_objects/infl.rds"</span>)</span>
+<span id="cb88-485"><a href="#cb88-485" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-486"><a href="#cb88-486" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-489"><a href="#cb88-489" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-490"><a href="#cb88-490" aria-hidden="true" tabindex="-1"></a><span class="co">#| label: "Load infl.rds"</span></span>
+<span id="cb88-491"><a href="#cb88-491" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: true</span></span>
+<span id="cb88-492"><a href="#cb88-492" aria-hidden="true" tabindex="-1"></a>infl <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">"data/rds_objects/infl.rds"</span>)</span>
+<span id="cb88-493"><a href="#cb88-493" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-494"><a href="#cb88-494" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-497"><a href="#cb88-497" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-498"><a href="#cb88-498" aria-hidden="true" tabindex="-1"></a>cooks <span class="ot">&lt;-</span> <span class="fu">cooks.distance</span>(infl)</span>
+<span id="cb88-499"><a href="#cb88-499" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-500"><a href="#cb88-500" aria-hidden="true" tabindex="-1"></a><span class="co"># View observations with high leverage</span></span>
+<span id="cb88-501"><a href="#cb88-501" aria-hidden="true" tabindex="-1"></a><span class="co"># -- Cook's distance &gt; 4/n is a standard rule</span></span>
+<span id="cb88-502"><a href="#cb88-502" aria-hidden="true" tabindex="-1"></a>high_influences <span class="ot">&lt;-</span> <span class="fu">which</span>(cooks <span class="sc">&gt;</span> (<span class="dv">4</span> <span class="sc">/</span> <span class="fu">nrow</span>(df_analysis)))</span>
+<span id="cb88-503"><a href="#cb88-503" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-504"><a href="#cb88-504" aria-hidden="true" tabindex="-1"></a><span class="co"># Subset data to get rid of high influences...</span></span>
+<span id="cb88-505"><a href="#cb88-505" aria-hidden="true" tabindex="-1"></a>df_sub <span class="ot">&lt;-</span> df_analysis <span class="sc">%&gt;%</span></span>
+<span id="cb88-506"><a href="#cb88-506" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="sc">-</span>high_influences)</span>
+<span id="cb88-507"><a href="#cb88-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-508"><a href="#cb88-508" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit model without the outliers</span></span>
+<span id="cb88-509"><a href="#cb88-509" aria-hidden="true" tabindex="-1"></a>mod_sub <span class="ot">&lt;-</span> <span class="fu">lmer</span>(egg_diameter_mm <span class="sc">~</span> treatment <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>ind_num), <span class="at">data =</span> df_sub)</span>
+<span id="cb88-510"><a href="#cb88-510" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-511"><a href="#cb88-511" aria-hidden="true" tabindex="-1"></a><span class="co"># Visual check of assumptions</span></span>
+<span id="cb88-512"><a href="#cb88-512" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb88-513"><a href="#cb88-513" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(mod_sub)</span>
+<span id="cb88-514"><a href="#cb88-514" aria-hidden="true" tabindex="-1"></a><span class="co"># -- Normality issue fixed, but variance looks slightly off.</span></span>
+<span id="cb88-515"><a href="#cb88-515" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-516"><a href="#cb88-516" aria-hidden="true" tabindex="-1"></a><span class="co"># Statistical test of assumptions</span></span>
+<span id="cb88-517"><a href="#cb88-517" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(<span class="fu">residuals</span>(mod_sub))</span>
+<span id="cb88-518"><a href="#cb88-518" aria-hidden="true" tabindex="-1"></a><span class="fu">leveneTest</span>(<span class="fu">residuals</span>(mod_sub) <span class="sc">~</span> df_sub<span class="sc">$</span>treatment)</span>
+<span id="cb88-519"><a href="#cb88-519" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-520"><a href="#cb88-520" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-521"><a href="#cb88-521" aria-hidden="true" tabindex="-1"></a>Normality problem is fixed with removing outliers, but there is an issue of variance. Linear mixed models are vulnerable to unequal variances. It is a good idea to move forward trying a more robust approach.</span>
+<span id="cb88-522"><a href="#cb88-522" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-523"><a href="#cb88-523" aria-hidden="true" tabindex="-1"></a><span class="fu">## Robust Model: `nmle` {#sec-robust-model}</span></span>
+<span id="cb88-524"><a href="#cb88-524" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-527"><a href="#cb88-527" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-528"><a href="#cb88-528" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb88-529"><a href="#cb88-529" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb88-530"><a href="#cb88-530" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Load the packages</span></span>
+<span id="cb88-531"><a href="#cb88-531" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nlme)</span>
+<span id="cb88-532"><a href="#cb88-532" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)      <span class="co"># For Type III Anova</span></span>
+<span id="cb88-533"><a href="#cb88-533" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(emmeans)  <span class="co"># For post-hoc pairwise comparisons</span></span>
+<span id="cb88-534"><a href="#cb88-534" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-535"><a href="#cb88-535" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-538"><a href="#cb88-538" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-539"><a href="#cb88-539" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Fit the model using Generalized Least Squares via lme</span></span>
+<span id="cb88-540"><a href="#cb88-540" aria-hidden="true" tabindex="-1"></a><span class="co"># random = ~ 1 | ind_num/treatment builds the nested random interaction term</span></span>
+<span id="cb88-541"><a href="#cb88-541" aria-hidden="true" tabindex="-1"></a><span class="co"># weights = varIdent(form = ~ 1 | treatment) models unique variances per group</span></span>
+<span id="cb88-542"><a href="#cb88-542" aria-hidden="true" tabindex="-1"></a>nlme_model <span class="ot">&lt;-</span> <span class="fu">lme</span>(<span class="at">fixed =</span> egg_diameter_mm <span class="sc">~</span> treatment, </span>
+<span id="cb88-543"><a href="#cb88-543" aria-hidden="true" tabindex="-1"></a>                  <span class="at">random =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> ind_num<span class="sc">/</span>treatment, </span>
+<span id="cb88-544"><a href="#cb88-544" aria-hidden="true" tabindex="-1"></a>                  <span class="at">weights =</span> <span class="fu">varIdent</span>(<span class="at">form =</span> <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> treatment), </span>
+<span id="cb88-545"><a href="#cb88-545" aria-hidden="true" tabindex="-1"></a>                  <span class="at">data =</span> df_sub,</span>
+<span id="cb88-546"><a href="#cb88-546" aria-hidden="true" tabindex="-1"></a>                  <span class="at">method =</span> <span class="st">"REML"</span>)</span>
+<span id="cb88-547"><a href="#cb88-547" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-548"><a href="#cb88-548" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-551"><a href="#cb88-551" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-552"><a href="#cb88-552" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. View the model summary (shows the estimated standard deviations per treatment)</span></span>
+<span id="cb88-553"><a href="#cb88-553" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(nlme_model)</span>
+<span id="cb88-554"><a href="#cb88-554" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-555"><a href="#cb88-555" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-558"><a href="#cb88-558" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-559"><a href="#cb88-559" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Generate the Type III ANOVA table </span></span>
+<span id="cb88-560"><a href="#cb88-560" aria-hidden="true" tabindex="-1"></a><span class="co"># "marginal" in nlme is equivalent to Type III Sum of Squares</span></span>
+<span id="cb88-561"><a href="#cb88-561" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(nlme_model, <span class="at">type =</span> <span class="st">"marginal"</span>)</span>
+<span id="cb88-562"><a href="#cb88-562" aria-hidden="true" tabindex="-1"></a><span class="co"># Anova(nlme_model, type = "III")</span></span>
+<span id="cb88-563"><a href="#cb88-563" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-564"><a href="#cb88-564" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-567"><a href="#cb88-567" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-568"><a href="#cb88-568" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Conduct post-hoc Tukey adjustments to see which treatments differ</span></span>
+<span id="cb88-569"><a href="#cb88-569" aria-hidden="true" tabindex="-1"></a>treatment_means <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(nlme_model, <span class="sc">~</span> treatment)</span>
+<span id="cb88-570"><a href="#cb88-570" aria-hidden="true" tabindex="-1"></a>pairwise_comps <span class="ot">&lt;-</span> <span class="fu">pairs</span>(treatment_means, <span class="at">adjust =</span> <span class="st">"tukey"</span>)</span>
+<span id="cb88-571"><a href="#cb88-571" aria-hidden="true" tabindex="-1"></a>pairwise_comps</span>
+<span id="cb88-572"><a href="#cb88-572" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-573"><a href="#cb88-573" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-574"><a href="#cb88-574" aria-hidden="true" tabindex="-1"></a><span class="fu"># Visualization</span></span>
+<span id="cb88-575"><a href="#cb88-575" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-576"><a href="#cb88-576" aria-hidden="true" tabindex="-1"></a>The best (statistically sound model) is the <span class="co">[</span><span class="ot">robust model</span><span class="co">](#sec-robust-model)</span> from <span class="in">`{nmle}`</span>.</span>
+<span id="cb88-577"><a href="#cb88-577" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-578"><a href="#cb88-578" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Accomodates randomized block design with subsampling and unequal design</span>
+<span id="cb88-579"><a href="#cb88-579" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Potential outliers were removed using a Cook's distance threshold</span>
+<span id="cb88-580"><a href="#cb88-580" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Used <span class="in">`varIdent`</span> function to address heteroscedasticity</span>
+<span id="cb88-581"><a href="#cb88-581" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Individuals and treatment-by-individual interaction were modeled as nested random effects.</span>
+<span id="cb88-582"><a href="#cb88-582" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Significant effect of treatment on egg diameter (Type III ANOVA)</span>
+<span id="cb88-583"><a href="#cb88-583" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>Post-hoc pairwise comparisons with Tukey adjustments</span>
+<span id="cb88-584"><a href="#cb88-584" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Iso70 had larger egg diameters than all other groups</span>
+<span id="cb88-585"><a href="#cb88-585" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>No difference between EtOH80 and EtOH95</span>
+<span id="cb88-586"><a href="#cb88-586" aria-hidden="true" tabindex="-1"></a><span class="ss">  - </span>Formalin10 resulted in significantly smaller egg sizes than all other treatments.</span>
+<span id="cb88-587"><a href="#cb88-587" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-588"><a href="#cb88-588" aria-hidden="true" tabindex="-1"></a><span class="fu">## Step 1: Prepare the estimated means data</span></span>
+<span id="cb88-589"><a href="#cb88-589" aria-hidden="true" tabindex="-1"></a>You need to extract the clean statistical means from the model. We already have <span class="in">`treatment_means`</span>, but it needs to be turned into a form that can be used by our graphing method.</span>
+<span id="cb88-590"><a href="#cb88-590" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-593"><a href="#cb88-593" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-594"><a href="#cb88-594" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(treatment_means)</span>
+<span id="cb88-595"><a href="#cb88-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-596"><a href="#cb88-596" aria-hidden="true" tabindex="-1"></a>df_emmeans <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(treatment_means)</span>
+<span id="cb88-597"><a href="#cb88-597" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df_emmeans)</span>
+<span id="cb88-598"><a href="#cb88-598" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-599"><a href="#cb88-599" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-600"><a href="#cb88-600" aria-hidden="true" tabindex="-1"></a><span class="fu">## Step 2: Make the ggplot object </span></span>
+<span id="cb88-601"><a href="#cb88-601" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-602"><a href="#cb88-602" aria-hidden="true" tabindex="-1"></a>I want the treatment categories on the plot to be in order from smallest to largest. </span>
+<span id="cb88-605"><a href="#cb88-605" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-606"><a href="#cb88-606" aria-hidden="true" tabindex="-1"></a>df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb88-607"><a href="#cb88-607" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(treatment, egg_diameter_mm) <span class="sc">%&gt;%</span></span>
+<span id="cb88-608"><a href="#cb88-608" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment) <span class="sc">%&gt;%</span></span>
+<span id="cb88-609"><a href="#cb88-609" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">mean =</span> <span class="fu">mean</span>(egg_diameter_mm))</span>
+<span id="cb88-610"><a href="#cb88-610" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-611"><a href="#cb88-611" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-614"><a href="#cb88-614" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-615"><a href="#cb88-615" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb88-616"><a href="#cb88-616" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-617"><a href="#cb88-617" aria-hidden="true" tabindex="-1"></a>df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb88-618"><a href="#cb88-618" aria-hidden="true" tabindex="-1"></a>  <span class="co"># PREP: Put categories in order small to large</span></span>
+<span id="cb88-619"><a href="#cb88-619" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">treatment =</span> <span class="fu">fct_reorder</span>(treatment, egg_diameter_mm, <span class="at">.fun =</span> <span class="st">'mean'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb88-620"><a href="#cb88-620" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> egg_diameter_mm)) <span class="sc">+</span></span>
+<span id="cb88-621"><a href="#cb88-621" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb88-622"><a href="#cb88-622" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 1: Individual eggs colored by individual</span></span>
+<span id="cb88-623"><a href="#cb88-623" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">as.factor</span>(ind_num)), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb88-624"><a href="#cb88-624" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb88-625"><a href="#cb88-625" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 2: Boxplots</span></span>
+<span id="cb88-626"><a href="#cb88-626" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, </span>
+<span id="cb88-627"><a href="#cb88-627" aria-hidden="true" tabindex="-1"></a>               <span class="at">outlier.shape =</span> <span class="cn">NA</span>, </span>
+<span id="cb88-628"><a href="#cb88-628" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">width =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb88-629"><a href="#cb88-629" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb88-630"><a href="#cb88-630" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 3: Estimated marginal means</span></span>
+<span id="cb88-631"><a href="#cb88-631" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_emmeans, <span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> emmean),</span>
+<span id="cb88-632"><a href="#cb88-632" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">shape =</span> <span class="dv">18</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb88-633"><a href="#cb88-633" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb88-634"><a href="#cb88-634" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 4: Labels &amp; theme customization</span></span>
+<span id="cb88-635"><a href="#cb88-635" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb88-636"><a href="#cb88-636" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Effect of Preservation Treatment on Egg Diameter"</span>,</span>
+<span id="cb88-637"><a href="#cb88-637" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Red diamonds represent model-estimated marginal means"</span>,</span>
+<span id="cb88-638"><a href="#cb88-638" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Treatment Group"</span>,</span>
+<span id="cb88-639"><a href="#cb88-639" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Egg Diameter (mm)"</span>,</span>
+<span id="cb88-640"><a href="#cb88-640" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Individual ID (Block)"</span></span>
+<span id="cb88-641"><a href="#cb88-641" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb88-642"><a href="#cb88-642" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span> </span>
+<span id="cb88-643"><a href="#cb88-643" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb88-644"><a href="#cb88-644" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb88-645"><a href="#cb88-645" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray30"</span>),</span>
+<span id="cb88-646"><a href="#cb88-646" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span></span>
+<span id="cb88-647"><a href="#cb88-647" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb88-648"><a href="#cb88-648" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-649"><a href="#cb88-649" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-650"><a href="#cb88-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-651"><a href="#cb88-651" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-654"><a href="#cb88-654" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-655"><a href="#cb88-655" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb88-656"><a href="#cb88-656" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb88-657"><a href="#cb88-657" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-658"><a href="#cb88-658" aria-hidden="true" tabindex="-1"></a><span class="co"># THIS IS UNFINISHED</span></span>
+<span id="cb88-659"><a href="#cb88-659" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(multcomp)</span>
+<span id="cb88-660"><a href="#cb88-660" aria-hidden="true" tabindex="-1"></a><span class="do">## Generate significance letters ##</span></span>
+<span id="cb88-661"><a href="#cb88-661" aria-hidden="true" tabindex="-1"></a>treatment_means</span>
+<span id="cb88-662"><a href="#cb88-662" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert emmeans object to general linear hypothesis object (glht)</span></span>
+<span id="cb88-663"><a href="#cb88-663" aria-hidden="true" tabindex="-1"></a>letters_data <span class="ot">&lt;-</span> <span class="fu">cld</span>(treatment_means, <span class="at">Letters =</span> letters, <span class="at">adjust =</span> <span class="st">"none"</span>)</span>
+<span id="cb88-664"><a href="#cb88-664" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: Setting adjust = "none" stops emmeans from warning about the CIs and it</span></span>
+<span id="cb88-665"><a href="#cb88-665" aria-hidden="true" tabindex="-1"></a><span class="co"># -- should still pas the Tukey-adjusted pairwise test behind the scenes</span></span>
+<span id="cb88-666"><a href="#cb88-666" aria-hidden="true" tabindex="-1"></a>letters_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(letters_data)</span>
+<span id="cb88-667"><a href="#cb88-667" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean whitespace in letter column...</span></span>
+<span id="cb88-668"><a href="#cb88-668" aria-hidden="true" tabindex="-1"></a>letters_df<span class="sc">$</span>.group <span class="ot">&lt;-</span> <span class="fu">trimws</span>(letters_df<span class="sc">$</span>.group)</span>
+<span id="cb88-669"><a href="#cb88-669" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-670"><a href="#cb88-670" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-673"><a href="#cb88-673" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-674"><a href="#cb88-674" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb88-675"><a href="#cb88-675" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb88-676"><a href="#cb88-676" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate each group's max.</span></span>
+<span id="cb88-677"><a href="#cb88-677" aria-hidden="true" tabindex="-1"></a><span class="co"># -- This makes it so you can plot a "floating" letter instead of static.</span></span>
+<span id="cb88-678"><a href="#cb88-678" aria-hidden="true" tabindex="-1"></a>group_max <span class="ot">&lt;-</span> df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb88-679"><a href="#cb88-679" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment) <span class="sc">%&gt;%</span></span>
+<span id="cb88-680"><a href="#cb88-680" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">max_y =</span> <span class="fu">max</span>(egg_diameter_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb88-681"><a href="#cb88-681" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-682"><a href="#cb88-682" aria-hidden="true" tabindex="-1"></a><span class="co"># Append the "heights" to the df</span></span>
+<span id="cb88-683"><a href="#cb88-683" aria-hidden="true" tabindex="-1"></a>letters_df <span class="ot">&lt;-</span> <span class="fu">left_join</span>(letters_df, group_max, <span class="at">by =</span> <span class="st">"treatment"</span>)</span>
+<span id="cb88-684"><a href="#cb88-684" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-685"><a href="#cb88-685" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-686"><a href="#cb88-686" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-689"><a href="#cb88-689" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-690"><a href="#cb88-690" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb88-691"><a href="#cb88-691" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb88-692"><a href="#cb88-692" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb88-693"><a href="#cb88-693" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggokabeito)</span>
+<span id="cb88-694"><a href="#cb88-694" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-695"><a href="#cb88-695" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Plot raw data boxplots with overlaid Tukey letters</span></span>
+<span id="cb88-696"><a href="#cb88-696" aria-hidden="true" tabindex="-1"></a>df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb88-697"><a href="#cb88-697" aria-hidden="true" tabindex="-1"></a>  <span class="co"># PREP: Put categories in order small to large</span></span>
+<span id="cb88-698"><a href="#cb88-698" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">treatment =</span> <span class="fu">fct_reorder</span>(treatment, egg_diameter_mm, <span class="at">.fun =</span> <span class="st">'mean'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb88-699"><a href="#cb88-699" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> egg_diameter_mm)) <span class="sc">+</span></span>
+<span id="cb88-700"><a href="#cb88-700" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-701"><a href="#cb88-701" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(df_sub, aes(x = treatment, y = egg_diameter_mm)) +</span></span>
+<span id="cb88-702"><a href="#cb88-702" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> treatment), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb88-703"><a href="#cb88-703" aria-hidden="true" tabindex="-1"></a><span class="co"># Shows individual egg data points</span></span>
+<span id="cb88-704"><a href="#cb88-704" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb88-705"><a href="#cb88-705" aria-hidden="true" tabindex="-1"></a><span class="co"># ANNOTATION LAYER: Places each letter exactly above its group's highest point</span></span>
+<span id="cb88-706"><a href="#cb88-706" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_text</span>(<span class="at">data =</span> letters_df, </span>
+<span id="cb88-707"><a href="#cb88-707" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> treatment, </span>
+<span id="cb88-708"><a href="#cb88-708" aria-hidden="true" tabindex="-1"></a>                 <span class="at">y =</span> max_y <span class="sc">+</span> <span class="fl">0.05</span>, </span>
+<span id="cb88-709"><a href="#cb88-709" aria-hidden="true" tabindex="-1"></a>                 <span class="at">label =</span> .group),</span>
+<span id="cb88-710"><a href="#cb88-710" aria-hidden="true" tabindex="-1"></a>             <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb88-711"><a href="#cb88-711" aria-hidden="true" tabindex="-1"></a>             <span class="at">fontface =</span> <span class="st">"bold"</span>, </span>
+<span id="cb88-712"><a href="#cb88-712" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb88-713"><a href="#cb88-713" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Layer 3: Estimated marginal means</span></span>
+<span id="cb88-714"><a href="#cb88-714" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_emmeans, <span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> emmean),</span>
+<span id="cb88-715"><a href="#cb88-715" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">shape =</span> <span class="dv">18</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb88-716"><a href="#cb88-716" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.12</span>))) <span class="sc">+</span> </span>
+<span id="cb88-717"><a href="#cb88-717" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-718"><a href="#cb88-718" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 4: Labels &amp; theme customization</span></span>
+<span id="cb88-719"><a href="#cb88-719" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb88-720"><a href="#cb88-720" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Effect of Preservation Treatment on Egg Diameter"</span>,</span>
+<span id="cb88-721"><a href="#cb88-721" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Red diamonds represent model-estimated marginal means"</span>,</span>
+<span id="cb88-722"><a href="#cb88-722" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Treatment Group"</span>,</span>
+<span id="cb88-723"><a href="#cb88-723" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Egg Diameter (mm)"</span>,</span>
+<span id="cb88-724"><a href="#cb88-724" aria-hidden="true" tabindex="-1"></a>    <span class="co"># color = "Individual ID (Block)"</span></span>
+<span id="cb88-725"><a href="#cb88-725" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb88-726"><a href="#cb88-726" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_okabe_ito</span>(<span class="at">name =</span> <span class="st">"Treatment"</span>, <span class="at">order =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb88-727"><a href="#cb88-727" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span> </span>
+<span id="cb88-728"><a href="#cb88-728" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb88-729"><a href="#cb88-729" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb88-730"><a href="#cb88-730" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray30"</span>),</span>
+<span id="cb88-731"><a href="#cb88-731" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span></span>
+<span id="cb88-732"><a href="#cb88-732" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb88-733"><a href="#cb88-733" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-734"><a href="#cb88-734" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-735"><a href="#cb88-735" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb88-736"><a href="#cb88-736" aria-hidden="true" tabindex="-1"></a>The R package <span class="in">`{ggokabeito}`</span> uses the well-known accessible palette 'Okabe-Ito'. By default, it uses colors in the regular order of the palette, but you can explicitly tell R which colors to use if you want to.</span>
+<span id="cb88-737"><a href="#cb88-737" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-738"><a href="#cb88-738" aria-hidden="true" tabindex="-1"></a>To preview what hex codes would look like, you can use <span class="in">`show_col()`</span> from the R package <span class="in">`{scales}`</span>.</span>
+<span id="cb88-739"><a href="#cb88-739" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

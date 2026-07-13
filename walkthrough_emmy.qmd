@@ -529,13 +529,13 @@ ggplot(aes(x = treatment, y = egg_diameter_mm)) +
   geom_jitter(aes(color = as.factor(ind_num)), alpha = 0.2, width = 0.2, size = 1) +
   
   # Layer 2: Boxplots
-  geom_boxplot(alpha = 0.5, 
+  geom_violin(alpha = 0.5, 
                outlier.shape = NA, 
                fill = "white", color = "black", width = 0.5) +
   
   # Layer 3: Estimated marginal means
   geom_point(data = df_emmeans, aes(x = treatment, y = emmean),
-             color = "red", shape = 18, size = 5) +
+             color = "black", shape = 18, size = 3) +
   
   # Layer 4: Labels & theme customization
   labs(

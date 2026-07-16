@@ -525,17 +525,19 @@ df_sub %>%
   mutate(treatment = fct_reorder(treatment, egg_diameter_mm, .fun = 'mean')) %>%
 ggplot(aes(x = treatment, y = egg_diameter_mm)) +
   
-  # Layer 1: Individual eggs colored by individual
-  geom_jitter(aes(color = as.factor(ind_num)), alpha = 0.2, width = 0.2, size = 1) +
+  # Layer 1: Individual eggs colored by treatment
+  geom_jitter(aes(color = as.factor(treatment)), alpha = 0.2, width = 0.2, size = 1) +
+  scale_color_manual(values = c("Formalin10" = "#ffb000", "Iso70" = "#dc267f", "EtOH95" = "#785ef0", "EtOH80" = "#fe6100")) + 
   
   # Layer 2: Boxplots
-  geom_violin(alpha = 0.5, 
+  geom_boxplot(alpha = 0.5, 
                outlier.shape = NA, 
-               fill = "white", color = "black", width = 0.5) +
+               fill = "white", color = "black", width = 0.5, staple.linewidth = 0.5, staple.color = "black", 
+               staple.linetype = "solid", staplewidth = 0.5) +
   
   # Layer 3: Estimated marginal means
   geom_point(data = df_emmeans, aes(x = treatment, y = emmean),
-             color = "black", shape = 18, size = 3) +
+             color = "red", shape = 18, size = 3) +
   
   # Layer 4: Labels & theme customization
   labs(
@@ -549,8 +551,12 @@ ggplot(aes(x = treatment, y = egg_diameter_mm)) +
   theme(
     plot.title = element_text(face = "bold", hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5, color = "gray30"),
-    legend.position = "right"
-  )
+    legend.position = "none",
+    axis.title = element_text(face = "bold"),
+    axis.text.x = element_text(face = "bold"),
+    axis.text.y = element_text(face = "bold")
+  ) +
+  ylim(1.5,2.5)
 ```
 
 
@@ -593,15 +599,18 @@ library(ggplot2)
 library(ggokabeito)
 
 # 5. Plot raw data boxplots with overlaid Tukey letters
-df_sub %>%
+fig1 <- df_sub %>%
   # PREP: Put categories in order small to large
   mutate(treatment = fct_reorder(treatment, egg_diameter_mm, .fun = 'mean')) %>%
 ggplot(aes(x = treatment, y = egg_diameter_mm)) +
-
+  
+geom_jitter(aes(color = as.factor(treatment)), alpha = 0.2, width = 0.2, size = 1) +
+  scale_color_manual(values = c("Formalin10" = "#ffb000", "Iso70" = "#dc267f", "EtOH95" = "#785ef0", "EtOH80" = "#fe6100")) +
 # ggplot(df_sub, aes(x = treatment, y = egg_diameter_mm)) +
-  geom_boxplot(aes(fill = treatment), color = "black", alpha = 0.6, outlier.shape = NA) +
-# Shows individual egg data points
-   geom_jitter(width = 0.1, alpha = 0.3, color = "black", size = 1) + 
+  geom_boxplot(alpha = 0.5, 
+               outlier.shape = NA, 
+               fill = "white", color = "black", width = 0.5, staple.linewidth = 0.5, staple.color = "black", 
+               staple.linetype = "solid", staplewidth = 0.5) +
 # ANNOTATION LAYER: Places each letter exactly above its group's highest point
    geom_text(data = letters_df, 
              aes(x = treatment, 
@@ -612,7 +621,7 @@ ggplot(aes(x = treatment, y = egg_diameter_mm)) +
              size = 5) +
     # Layer 3: Estimated marginal means
   geom_point(data = df_emmeans, aes(x = treatment, y = emmean),
-             color = "red", shape = 18, size = 5) +
+             color = "red", shape = 18, size = 3) +
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.12))) + 
 
   # Layer 4: Labels & theme customization
@@ -628,9 +637,11 @@ ggplot(aes(x = treatment, y = egg_diameter_mm)) +
   theme(
     plot.title = element_text(face = "bold", hjust = 0.5),
     plot.subtitle = element_text(hjust = 0.5, color = "gray30"),
-    legend.position = "right"
+    legend.position = "none",
+    axis.text.x = element_text(face = "bold"),
+    axis.text.y = element_text(face = "bold"),
+    axis.title = element_text(face = "bold")
   )
-```
 
 :::{.callout-note}
 The R package `{ggokabeito}` uses the well-known accessible palette 'Okabe-Ito'. By default, it uses colors in the regular order of the palette, but you can explicitly tell R which colors to use if you want to.

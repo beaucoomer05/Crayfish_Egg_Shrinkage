@@ -942,32 +942,34 @@ Confidence level used: 0.95 </code></pre>
 <span id="cb87-5"><a href="#cb87-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">treatment =</span> <span class="fu">fct_reorder</span>(treatment, egg_diameter_mm, <span class="at">.fun =</span> <span class="st">'mean'</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb87-6"><a href="#cb87-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> egg_diameter_mm)) <span class="sc">+</span></span>
 <span id="cb87-7"><a href="#cb87-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 1: Individual eggs colored by individual</span></span>
-<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">as.factor</span>(ind_num)), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 2: Boxplots</span></span>
-<span id="cb87-12"><a href="#cb87-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, </span>
-<span id="cb87-13"><a href="#cb87-13" aria-hidden="true" tabindex="-1"></a>               <span class="at">outlier.shape =</span> <span class="cn">NA</span>, </span>
-<span id="cb87-14"><a href="#cb87-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">width =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb87-15"><a href="#cb87-15" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb87-16"><a href="#cb87-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 3: Estimated marginal means</span></span>
-<span id="cb87-17"><a href="#cb87-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_emmeans, <span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> emmean),</span>
-<span id="cb87-18"><a href="#cb87-18" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">shape =</span> <span class="dv">18</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb87-19"><a href="#cb87-19" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb87-20"><a href="#cb87-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 4: Labels &amp; theme customization</span></span>
-<span id="cb87-21"><a href="#cb87-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb87-22"><a href="#cb87-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Effect of Preservation Treatment on Egg Diameter"</span>,</span>
-<span id="cb87-23"><a href="#cb87-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Red diamonds represent model-estimated marginal means"</span>,</span>
-<span id="cb87-24"><a href="#cb87-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Treatment Group"</span>,</span>
-<span id="cb87-25"><a href="#cb87-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Egg Diameter (mm)"</span>,</span>
-<span id="cb87-26"><a href="#cb87-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Individual ID (Block)"</span></span>
-<span id="cb87-27"><a href="#cb87-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
-<span id="cb87-28"><a href="#cb87-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span> </span>
-<span id="cb87-29"><a href="#cb87-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb87-30"><a href="#cb87-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb87-31"><a href="#cb87-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray30"</span>),</span>
-<span id="cb87-32"><a href="#cb87-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span></span>
-<span id="cb87-33"><a href="#cb87-33" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb87-8"><a href="#cb87-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 1: Individual eggs colored by treatment</span></span>
+<span id="cb87-9"><a href="#cb87-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">as.factor</span>(treatment)), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb87-10"><a href="#cb87-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Formalin10"</span> <span class="ot">=</span> <span class="st">"#ffb000"</span>, <span class="st">"Iso70"</span> <span class="ot">=</span> <span class="st">"#dc267f"</span>, <span class="st">"EtOH95"</span> <span class="ot">=</span> <span class="st">"#785ef0"</span>, <span class="st">"EtOH80"</span> <span class="ot">=</span> <span class="st">"#fe6100"</span>)) <span class="sc">+</span> </span>
+<span id="cb87-11"><a href="#cb87-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb87-12"><a href="#cb87-12" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 2: Boxplots</span></span>
+<span id="cb87-13"><a href="#cb87-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, </span>
+<span id="cb87-14"><a href="#cb87-14" aria-hidden="true" tabindex="-1"></a>               <span class="at">outlier.shape =</span> <span class="cn">NA</span>, </span>
+<span id="cb87-15"><a href="#cb87-15" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">width =</span> <span class="fl">0.5</span>, <span class="at">staple.linewidth =</span> <span class="fl">1.5</span>, <span class="at">staple.color =</span> <span class="st">"black"</span>, <span class="at">staple.linetype =</span> <span class="st">"solid"</span>) <span class="sc">+</span></span>
+<span id="cb87-16"><a href="#cb87-16" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb87-17"><a href="#cb87-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 3: Estimated marginal means</span></span>
+<span id="cb87-18"><a href="#cb87-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_emmeans, <span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> emmean),</span>
+<span id="cb87-19"><a href="#cb87-19" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">shape =</span> <span class="dv">18</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb87-20"><a href="#cb87-20" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb87-21"><a href="#cb87-21" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 4: Labels &amp; theme customization</span></span>
+<span id="cb87-22"><a href="#cb87-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb87-23"><a href="#cb87-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Effect of Preservation Treatment on Egg Diameter"</span>,</span>
+<span id="cb87-24"><a href="#cb87-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Red diamonds represent model-estimated marginal means"</span>,</span>
+<span id="cb87-25"><a href="#cb87-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Treatment Group"</span>,</span>
+<span id="cb87-26"><a href="#cb87-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Egg Diameter (mm)"</span>,</span>
+<span id="cb87-27"><a href="#cb87-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Individual ID (Block)"</span></span>
+<span id="cb87-28"><a href="#cb87-28" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb87-29"><a href="#cb87-29" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span> </span>
+<span id="cb87-30"><a href="#cb87-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb87-31"><a href="#cb87-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb87-32"><a href="#cb87-32" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray30"</span>),</span>
+<span id="cb87-33"><a href="#cb87-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb87-34"><a href="#cb87-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb87-35"><a href="#cb87-35" aria-hidden="true" tabindex="-1"></a>  )</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1975,118 +1977,120 @@ Note
 <span id="cb88-619"><a href="#cb88-619" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">treatment =</span> <span class="fu">fct_reorder</span>(treatment, egg_diameter_mm, <span class="at">.fun =</span> <span class="st">'mean'</span>)) <span class="sc">%&gt;%</span></span>
 <span id="cb88-620"><a href="#cb88-620" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> egg_diameter_mm)) <span class="sc">+</span></span>
 <span id="cb88-621"><a href="#cb88-621" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb88-622"><a href="#cb88-622" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 1: Individual eggs colored by individual</span></span>
-<span id="cb88-623"><a href="#cb88-623" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">as.factor</span>(ind_num)), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
-<span id="cb88-624"><a href="#cb88-624" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb88-625"><a href="#cb88-625" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 2: Boxplots</span></span>
-<span id="cb88-626"><a href="#cb88-626" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, </span>
-<span id="cb88-627"><a href="#cb88-627" aria-hidden="true" tabindex="-1"></a>               <span class="at">outlier.shape =</span> <span class="cn">NA</span>, </span>
-<span id="cb88-628"><a href="#cb88-628" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">width =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb88-629"><a href="#cb88-629" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb88-630"><a href="#cb88-630" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 3: Estimated marginal means</span></span>
-<span id="cb88-631"><a href="#cb88-631" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_emmeans, <span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> emmean),</span>
-<span id="cb88-632"><a href="#cb88-632" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">shape =</span> <span class="dv">18</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb88-633"><a href="#cb88-633" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb88-634"><a href="#cb88-634" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 4: Labels &amp; theme customization</span></span>
-<span id="cb88-635"><a href="#cb88-635" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb88-636"><a href="#cb88-636" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Effect of Preservation Treatment on Egg Diameter"</span>,</span>
-<span id="cb88-637"><a href="#cb88-637" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Red diamonds represent model-estimated marginal means"</span>,</span>
-<span id="cb88-638"><a href="#cb88-638" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Treatment Group"</span>,</span>
-<span id="cb88-639"><a href="#cb88-639" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Egg Diameter (mm)"</span>,</span>
-<span id="cb88-640"><a href="#cb88-640" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Individual ID (Block)"</span></span>
-<span id="cb88-641"><a href="#cb88-641" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
-<span id="cb88-642"><a href="#cb88-642" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span> </span>
-<span id="cb88-643"><a href="#cb88-643" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb88-644"><a href="#cb88-644" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb88-645"><a href="#cb88-645" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray30"</span>),</span>
-<span id="cb88-646"><a href="#cb88-646" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span></span>
-<span id="cb88-647"><a href="#cb88-647" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb88-648"><a href="#cb88-648" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb88-649"><a href="#cb88-649" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-650"><a href="#cb88-650" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-622"><a href="#cb88-622" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 1: Individual eggs colored by treatment</span></span>
+<span id="cb88-623"><a href="#cb88-623" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_jitter</span>(<span class="fu">aes</span>(<span class="at">color =</span> <span class="fu">as.factor</span>(treatment)), <span class="at">alpha =</span> <span class="fl">0.2</span>, <span class="at">width =</span> <span class="fl">0.2</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb88-624"><a href="#cb88-624" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"Formalin10"</span> <span class="ot">=</span> <span class="st">"#ffb000"</span>, <span class="st">"Iso70"</span> <span class="ot">=</span> <span class="st">"#dc267f"</span>, <span class="st">"EtOH95"</span> <span class="ot">=</span> <span class="st">"#785ef0"</span>, <span class="st">"EtOH80"</span> <span class="ot">=</span> <span class="st">"#fe6100"</span>)) <span class="sc">+</span> </span>
+<span id="cb88-625"><a href="#cb88-625" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb88-626"><a href="#cb88-626" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 2: Boxplots</span></span>
+<span id="cb88-627"><a href="#cb88-627" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>, </span>
+<span id="cb88-628"><a href="#cb88-628" aria-hidden="true" tabindex="-1"></a>               <span class="at">outlier.shape =</span> <span class="cn">NA</span>, </span>
+<span id="cb88-629"><a href="#cb88-629" aria-hidden="true" tabindex="-1"></a>               <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">width =</span> <span class="fl">0.5</span>, <span class="at">staple.linewidth =</span> <span class="fl">1.5</span>, <span class="at">staple.color =</span> <span class="st">"black"</span>, <span class="at">staple.linetype =</span> <span class="st">"solid"</span>) <span class="sc">+</span></span>
+<span id="cb88-630"><a href="#cb88-630" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb88-631"><a href="#cb88-631" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 3: Estimated marginal means</span></span>
+<span id="cb88-632"><a href="#cb88-632" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_emmeans, <span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> emmean),</span>
+<span id="cb88-633"><a href="#cb88-633" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">shape =</span> <span class="dv">18</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb88-634"><a href="#cb88-634" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb88-635"><a href="#cb88-635" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 4: Labels &amp; theme customization</span></span>
+<span id="cb88-636"><a href="#cb88-636" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb88-637"><a href="#cb88-637" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Effect of Preservation Treatment on Egg Diameter"</span>,</span>
+<span id="cb88-638"><a href="#cb88-638" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Red diamonds represent model-estimated marginal means"</span>,</span>
+<span id="cb88-639"><a href="#cb88-639" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Treatment Group"</span>,</span>
+<span id="cb88-640"><a href="#cb88-640" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Egg Diameter (mm)"</span>,</span>
+<span id="cb88-641"><a href="#cb88-641" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Individual ID (Block)"</span></span>
+<span id="cb88-642"><a href="#cb88-642" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb88-643"><a href="#cb88-643" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span> </span>
+<span id="cb88-644"><a href="#cb88-644" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb88-645"><a href="#cb88-645" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb88-646"><a href="#cb88-646" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray30"</span>),</span>
+<span id="cb88-647"><a href="#cb88-647" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"none"</span>,</span>
+<span id="cb88-648"><a href="#cb88-648" aria-hidden="true" tabindex="-1"></a>    <span class="at">axis.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>)</span>
+<span id="cb88-649"><a href="#cb88-649" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb88-650"><a href="#cb88-650" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb88-651"><a href="#cb88-651" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-654"><a href="#cb88-654" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb88-655"><a href="#cb88-655" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb88-656"><a href="#cb88-656" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb88-657"><a href="#cb88-657" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-658"><a href="#cb88-658" aria-hidden="true" tabindex="-1"></a><span class="co"># THIS IS UNFINISHED</span></span>
-<span id="cb88-659"><a href="#cb88-659" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(multcomp)</span>
-<span id="cb88-660"><a href="#cb88-660" aria-hidden="true" tabindex="-1"></a><span class="do">## Generate significance letters ##</span></span>
-<span id="cb88-661"><a href="#cb88-661" aria-hidden="true" tabindex="-1"></a>treatment_means</span>
-<span id="cb88-662"><a href="#cb88-662" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert emmeans object to general linear hypothesis object (glht)</span></span>
-<span id="cb88-663"><a href="#cb88-663" aria-hidden="true" tabindex="-1"></a>letters_data <span class="ot">&lt;-</span> <span class="fu">cld</span>(treatment_means, <span class="at">Letters =</span> letters, <span class="at">adjust =</span> <span class="st">"none"</span>)</span>
-<span id="cb88-664"><a href="#cb88-664" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: Setting adjust = "none" stops emmeans from warning about the CIs and it</span></span>
-<span id="cb88-665"><a href="#cb88-665" aria-hidden="true" tabindex="-1"></a><span class="co"># -- should still pas the Tukey-adjusted pairwise test behind the scenes</span></span>
-<span id="cb88-666"><a href="#cb88-666" aria-hidden="true" tabindex="-1"></a>letters_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(letters_data)</span>
-<span id="cb88-667"><a href="#cb88-667" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean whitespace in letter column...</span></span>
-<span id="cb88-668"><a href="#cb88-668" aria-hidden="true" tabindex="-1"></a>letters_df<span class="sc">$</span>.group <span class="ot">&lt;-</span> <span class="fu">trimws</span>(letters_df<span class="sc">$</span>.group)</span>
-<span id="cb88-669"><a href="#cb88-669" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb88-670"><a href="#cb88-670" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-673"><a href="#cb88-673" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb88-674"><a href="#cb88-674" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb88-675"><a href="#cb88-675" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb88-676"><a href="#cb88-676" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate each group's max.</span></span>
-<span id="cb88-677"><a href="#cb88-677" aria-hidden="true" tabindex="-1"></a><span class="co"># -- This makes it so you can plot a "floating" letter instead of static.</span></span>
-<span id="cb88-678"><a href="#cb88-678" aria-hidden="true" tabindex="-1"></a>group_max <span class="ot">&lt;-</span> df_sub <span class="sc">%&gt;%</span></span>
-<span id="cb88-679"><a href="#cb88-679" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment) <span class="sc">%&gt;%</span></span>
-<span id="cb88-680"><a href="#cb88-680" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">max_y =</span> <span class="fu">max</span>(egg_diameter_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb88-681"><a href="#cb88-681" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-682"><a href="#cb88-682" aria-hidden="true" tabindex="-1"></a><span class="co"># Append the "heights" to the df</span></span>
-<span id="cb88-683"><a href="#cb88-683" aria-hidden="true" tabindex="-1"></a>letters_df <span class="ot">&lt;-</span> <span class="fu">left_join</span>(letters_df, group_max, <span class="at">by =</span> <span class="st">"treatment"</span>)</span>
-<span id="cb88-684"><a href="#cb88-684" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb88-685"><a href="#cb88-685" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-686"><a href="#cb88-686" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-689"><a href="#cb88-689" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb88-690"><a href="#cb88-690" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb88-691"><a href="#cb88-691" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
-<span id="cb88-692"><a href="#cb88-692" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb88-693"><a href="#cb88-693" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggokabeito)</span>
-<span id="cb88-694"><a href="#cb88-694" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-695"><a href="#cb88-695" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Plot raw data boxplots with overlaid Tukey letters</span></span>
-<span id="cb88-696"><a href="#cb88-696" aria-hidden="true" tabindex="-1"></a>df_sub <span class="sc">%&gt;%</span></span>
-<span id="cb88-697"><a href="#cb88-697" aria-hidden="true" tabindex="-1"></a>  <span class="co"># PREP: Put categories in order small to large</span></span>
-<span id="cb88-698"><a href="#cb88-698" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">treatment =</span> <span class="fu">fct_reorder</span>(treatment, egg_diameter_mm, <span class="at">.fun =</span> <span class="st">'mean'</span>)) <span class="sc">%&gt;%</span></span>
-<span id="cb88-699"><a href="#cb88-699" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> egg_diameter_mm)) <span class="sc">+</span></span>
-<span id="cb88-700"><a href="#cb88-700" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-701"><a href="#cb88-701" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(df_sub, aes(x = treatment, y = egg_diameter_mm)) +</span></span>
-<span id="cb88-702"><a href="#cb88-702" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> treatment), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
-<span id="cb88-703"><a href="#cb88-703" aria-hidden="true" tabindex="-1"></a><span class="co"># Shows individual egg data points</span></span>
-<span id="cb88-704"><a href="#cb88-704" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
-<span id="cb88-705"><a href="#cb88-705" aria-hidden="true" tabindex="-1"></a><span class="co"># ANNOTATION LAYER: Places each letter exactly above its group's highest point</span></span>
-<span id="cb88-706"><a href="#cb88-706" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_text</span>(<span class="at">data =</span> letters_df, </span>
-<span id="cb88-707"><a href="#cb88-707" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> treatment, </span>
-<span id="cb88-708"><a href="#cb88-708" aria-hidden="true" tabindex="-1"></a>                 <span class="at">y =</span> max_y <span class="sc">+</span> <span class="fl">0.05</span>, </span>
-<span id="cb88-709"><a href="#cb88-709" aria-hidden="true" tabindex="-1"></a>                 <span class="at">label =</span> .group),</span>
-<span id="cb88-710"><a href="#cb88-710" aria-hidden="true" tabindex="-1"></a>             <span class="at">vjust =</span> <span class="dv">0</span>, </span>
-<span id="cb88-711"><a href="#cb88-711" aria-hidden="true" tabindex="-1"></a>             <span class="at">fontface =</span> <span class="st">"bold"</span>, </span>
-<span id="cb88-712"><a href="#cb88-712" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb88-713"><a href="#cb88-713" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Layer 3: Estimated marginal means</span></span>
-<span id="cb88-714"><a href="#cb88-714" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_emmeans, <span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> emmean),</span>
-<span id="cb88-715"><a href="#cb88-715" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">shape =</span> <span class="dv">18</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb88-716"><a href="#cb88-716" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.12</span>))) <span class="sc">+</span> </span>
-<span id="cb88-717"><a href="#cb88-717" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-718"><a href="#cb88-718" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 4: Labels &amp; theme customization</span></span>
-<span id="cb88-719"><a href="#cb88-719" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb88-720"><a href="#cb88-720" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Effect of Preservation Treatment on Egg Diameter"</span>,</span>
-<span id="cb88-721"><a href="#cb88-721" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Red diamonds represent model-estimated marginal means"</span>,</span>
-<span id="cb88-722"><a href="#cb88-722" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Treatment Group"</span>,</span>
-<span id="cb88-723"><a href="#cb88-723" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Egg Diameter (mm)"</span>,</span>
-<span id="cb88-724"><a href="#cb88-724" aria-hidden="true" tabindex="-1"></a>    <span class="co"># color = "Individual ID (Block)"</span></span>
-<span id="cb88-725"><a href="#cb88-725" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
-<span id="cb88-726"><a href="#cb88-726" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_okabe_ito</span>(<span class="at">name =</span> <span class="st">"Treatment"</span>, <span class="at">order =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>) <span class="sc">+</span></span>
-<span id="cb88-727"><a href="#cb88-727" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span> </span>
-<span id="cb88-728"><a href="#cb88-728" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb88-729"><a href="#cb88-729" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
-<span id="cb88-730"><a href="#cb88-730" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray30"</span>),</span>
-<span id="cb88-731"><a href="#cb88-731" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span></span>
-<span id="cb88-732"><a href="#cb88-732" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb88-733"><a href="#cb88-733" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb88-734"><a href="#cb88-734" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-735"><a href="#cb88-735" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
-<span id="cb88-736"><a href="#cb88-736" aria-hidden="true" tabindex="-1"></a>The R package <span class="in">`{ggokabeito}`</span> uses the well-known accessible palette 'Okabe-Ito'. By default, it uses colors in the regular order of the palette, but you can explicitly tell R which colors to use if you want to.</span>
-<span id="cb88-737"><a href="#cb88-737" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-738"><a href="#cb88-738" aria-hidden="true" tabindex="-1"></a>To preview what hex codes would look like, you can use <span class="in">`show_col()`</span> from the R package <span class="in">`{scales}`</span>.</span>
-<span id="cb88-739"><a href="#cb88-739" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb88-652"><a href="#cb88-652" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-653"><a href="#cb88-653" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-656"><a href="#cb88-656" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-657"><a href="#cb88-657" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb88-658"><a href="#cb88-658" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb88-659"><a href="#cb88-659" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-660"><a href="#cb88-660" aria-hidden="true" tabindex="-1"></a><span class="co"># THIS IS UNFINISHED</span></span>
+<span id="cb88-661"><a href="#cb88-661" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(multcomp)</span>
+<span id="cb88-662"><a href="#cb88-662" aria-hidden="true" tabindex="-1"></a><span class="do">## Generate significance letters ##</span></span>
+<span id="cb88-663"><a href="#cb88-663" aria-hidden="true" tabindex="-1"></a>treatment_means</span>
+<span id="cb88-664"><a href="#cb88-664" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert emmeans object to general linear hypothesis object (glht)</span></span>
+<span id="cb88-665"><a href="#cb88-665" aria-hidden="true" tabindex="-1"></a>letters_data <span class="ot">&lt;-</span> <span class="fu">cld</span>(treatment_means, <span class="at">Letters =</span> letters, <span class="at">adjust =</span> <span class="st">"none"</span>)</span>
+<span id="cb88-666"><a href="#cb88-666" aria-hidden="true" tabindex="-1"></a><span class="co"># </span><span class="al">NOTE</span><span class="co">: Setting adjust = "none" stops emmeans from warning about the CIs and it</span></span>
+<span id="cb88-667"><a href="#cb88-667" aria-hidden="true" tabindex="-1"></a><span class="co"># -- should still pas the Tukey-adjusted pairwise test behind the scenes</span></span>
+<span id="cb88-668"><a href="#cb88-668" aria-hidden="true" tabindex="-1"></a>letters_df <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(letters_data)</span>
+<span id="cb88-669"><a href="#cb88-669" aria-hidden="true" tabindex="-1"></a><span class="co"># Clean whitespace in letter column...</span></span>
+<span id="cb88-670"><a href="#cb88-670" aria-hidden="true" tabindex="-1"></a>letters_df<span class="sc">$</span>.group <span class="ot">&lt;-</span> <span class="fu">trimws</span>(letters_df<span class="sc">$</span>.group)</span>
+<span id="cb88-671"><a href="#cb88-671" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-672"><a href="#cb88-672" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-675"><a href="#cb88-675" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-676"><a href="#cb88-676" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb88-677"><a href="#cb88-677" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb88-678"><a href="#cb88-678" aria-hidden="true" tabindex="-1"></a><span class="co"># Calculate each group's max.</span></span>
+<span id="cb88-679"><a href="#cb88-679" aria-hidden="true" tabindex="-1"></a><span class="co"># -- This makes it so you can plot a "floating" letter instead of static.</span></span>
+<span id="cb88-680"><a href="#cb88-680" aria-hidden="true" tabindex="-1"></a>group_max <span class="ot">&lt;-</span> df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb88-681"><a href="#cb88-681" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(treatment) <span class="sc">%&gt;%</span></span>
+<span id="cb88-682"><a href="#cb88-682" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">max_y =</span> <span class="fu">max</span>(egg_diameter_mm, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb88-683"><a href="#cb88-683" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-684"><a href="#cb88-684" aria-hidden="true" tabindex="-1"></a><span class="co"># Append the "heights" to the df</span></span>
+<span id="cb88-685"><a href="#cb88-685" aria-hidden="true" tabindex="-1"></a>letters_df <span class="ot">&lt;-</span> <span class="fu">left_join</span>(letters_df, group_max, <span class="at">by =</span> <span class="st">"treatment"</span>)</span>
+<span id="cb88-686"><a href="#cb88-686" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-687"><a href="#cb88-687" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-688"><a href="#cb88-688" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-691"><a href="#cb88-691" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb88-692"><a href="#cb88-692" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb88-693"><a href="#cb88-693" aria-hidden="true" tabindex="-1"></a><span class="co">#| include: false</span></span>
+<span id="cb88-694"><a href="#cb88-694" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb88-695"><a href="#cb88-695" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggokabeito)</span>
+<span id="cb88-696"><a href="#cb88-696" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-697"><a href="#cb88-697" aria-hidden="true" tabindex="-1"></a><span class="co"># 5. Plot raw data boxplots with overlaid Tukey letters</span></span>
+<span id="cb88-698"><a href="#cb88-698" aria-hidden="true" tabindex="-1"></a>df_sub <span class="sc">%&gt;%</span></span>
+<span id="cb88-699"><a href="#cb88-699" aria-hidden="true" tabindex="-1"></a>  <span class="co"># PREP: Put categories in order small to large</span></span>
+<span id="cb88-700"><a href="#cb88-700" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">treatment =</span> <span class="fu">fct_reorder</span>(treatment, egg_diameter_mm, <span class="at">.fun =</span> <span class="st">'mean'</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb88-701"><a href="#cb88-701" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> egg_diameter_mm)) <span class="sc">+</span></span>
+<span id="cb88-702"><a href="#cb88-702" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-703"><a href="#cb88-703" aria-hidden="true" tabindex="-1"></a><span class="co"># ggplot(df_sub, aes(x = treatment, y = egg_diameter_mm)) +</span></span>
+<span id="cb88-704"><a href="#cb88-704" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">fill =</span> treatment), <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> <span class="fl">0.6</span>, <span class="at">outlier.shape =</span> <span class="cn">NA</span>) <span class="sc">+</span></span>
+<span id="cb88-705"><a href="#cb88-705" aria-hidden="true" tabindex="-1"></a><span class="co"># Shows individual egg data points</span></span>
+<span id="cb88-706"><a href="#cb88-706" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_jitter</span>(<span class="at">width =</span> <span class="fl">0.1</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>, <span class="at">color =</span> <span class="st">"black"</span>, <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb88-707"><a href="#cb88-707" aria-hidden="true" tabindex="-1"></a><span class="co"># ANNOTATION LAYER: Places each letter exactly above its group's highest point</span></span>
+<span id="cb88-708"><a href="#cb88-708" aria-hidden="true" tabindex="-1"></a>   <span class="fu">geom_text</span>(<span class="at">data =</span> letters_df, </span>
+<span id="cb88-709"><a href="#cb88-709" aria-hidden="true" tabindex="-1"></a>             <span class="fu">aes</span>(<span class="at">x =</span> treatment, </span>
+<span id="cb88-710"><a href="#cb88-710" aria-hidden="true" tabindex="-1"></a>                 <span class="at">y =</span> max_y <span class="sc">+</span> <span class="fl">0.05</span>, </span>
+<span id="cb88-711"><a href="#cb88-711" aria-hidden="true" tabindex="-1"></a>                 <span class="at">label =</span> .group),</span>
+<span id="cb88-712"><a href="#cb88-712" aria-hidden="true" tabindex="-1"></a>             <span class="at">vjust =</span> <span class="dv">0</span>, </span>
+<span id="cb88-713"><a href="#cb88-713" aria-hidden="true" tabindex="-1"></a>             <span class="at">fontface =</span> <span class="st">"bold"</span>, </span>
+<span id="cb88-714"><a href="#cb88-714" aria-hidden="true" tabindex="-1"></a>             <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb88-715"><a href="#cb88-715" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Layer 3: Estimated marginal means</span></span>
+<span id="cb88-716"><a href="#cb88-716" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">data =</span> df_emmeans, <span class="fu">aes</span>(<span class="at">x =</span> treatment, <span class="at">y =</span> emmean),</span>
+<span id="cb88-717"><a href="#cb88-717" aria-hidden="true" tabindex="-1"></a>             <span class="at">color =</span> <span class="st">"red"</span>, <span class="at">shape =</span> <span class="dv">18</span>, <span class="at">size =</span> <span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb88-718"><a href="#cb88-718" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">expand =</span> <span class="fu">expansion</span>(<span class="at">mult =</span> <span class="fu">c</span>(<span class="fl">0.05</span>, <span class="fl">0.12</span>))) <span class="sc">+</span> </span>
+<span id="cb88-719"><a href="#cb88-719" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-720"><a href="#cb88-720" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Layer 4: Labels &amp; theme customization</span></span>
+<span id="cb88-721"><a href="#cb88-721" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb88-722"><a href="#cb88-722" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Effect of Preservation Treatment on Egg Diameter"</span>,</span>
+<span id="cb88-723"><a href="#cb88-723" aria-hidden="true" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">"Red diamonds represent model-estimated marginal means"</span>,</span>
+<span id="cb88-724"><a href="#cb88-724" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Treatment Group"</span>,</span>
+<span id="cb88-725"><a href="#cb88-725" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Egg Diameter (mm)"</span>,</span>
+<span id="cb88-726"><a href="#cb88-726" aria-hidden="true" tabindex="-1"></a>    <span class="co"># color = "Individual ID (Block)"</span></span>
+<span id="cb88-727"><a href="#cb88-727" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span> </span>
+<span id="cb88-728"><a href="#cb88-728" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_okabe_ito</span>(<span class="at">name =</span> <span class="st">"Treatment"</span>, <span class="at">order =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">6</span>) <span class="sc">+</span></span>
+<span id="cb88-729"><a href="#cb88-729" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>(<span class="at">base_size =</span> <span class="dv">14</span>) <span class="sc">+</span> </span>
+<span id="cb88-730"><a href="#cb88-730" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb88-731"><a href="#cb88-731" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">"bold"</span>, <span class="at">hjust =</span> <span class="fl">0.5</span>),</span>
+<span id="cb88-732"><a href="#cb88-732" aria-hidden="true" tabindex="-1"></a>    <span class="at">plot.subtitle =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">color =</span> <span class="st">"gray30"</span>),</span>
+<span id="cb88-733"><a href="#cb88-733" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">"right"</span></span>
+<span id="cb88-734"><a href="#cb88-734" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb88-735"><a href="#cb88-735" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb88-736"><a href="#cb88-736" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-737"><a href="#cb88-737" aria-hidden="true" tabindex="-1"></a>:::{.callout-note}</span>
+<span id="cb88-738"><a href="#cb88-738" aria-hidden="true" tabindex="-1"></a>The R package <span class="in">`{ggokabeito}`</span> uses the well-known accessible palette 'Okabe-Ito'. By default, it uses colors in the regular order of the palette, but you can explicitly tell R which colors to use if you want to.</span>
+<span id="cb88-739"><a href="#cb88-739" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb88-740"><a href="#cb88-740" aria-hidden="true" tabindex="-1"></a>To preview what hex codes would look like, you can use <span class="in">`show_col()`</span> from the R package <span class="in">`{scales}`</span>.</span>
+<span id="cb88-741"><a href="#cb88-741" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code></pre></div><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></div>
 </div></div></div></div></div>
 </div> <!-- /content -->

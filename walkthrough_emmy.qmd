@@ -604,10 +604,10 @@ fig1 <- df_sub %>%
   mutate(treatment = fct_reorder(treatment, egg_diameter_mm, .fun = 'mean')) %>%
 ggplot(aes(x = treatment, y = egg_diameter_mm)) +
   
-geom_jitter(aes(color = as.factor(treatment)), alpha = 0.2, width = 0.2, size = 1) +
+geom_jitter(aes(color = as.factor(treatment)), alpha = 0.5, width = 0.2, size = 1) +
   scale_color_manual(values = c("Formalin10" = "#ffb000", "Iso70" = "#dc267f", "EtOH95" = "#785ef0", "EtOH80" = "#fe6100")) +
 # ggplot(df_sub, aes(x = treatment, y = egg_diameter_mm)) +
-  geom_boxplot(alpha = 0.5, 
+  geom_boxplot(alpha = 0.2, 
                outlier.shape = NA, 
                fill = "white", color = "black", width = 0.5, staple.linewidth = 0.5, staple.color = "black", 
                staple.linetype = "solid", staplewidth = 0.5) +
@@ -621,13 +621,13 @@ geom_jitter(aes(color = as.factor(treatment)), alpha = 0.2, width = 0.2, size = 
              size = 5) +
     # Layer 3: Estimated marginal means
   geom_point(data = df_emmeans, aes(x = treatment, y = emmean),
-             color = "red", shape = 18, size = 3) +
+             color = "black", shape = 21, size = 2.75, fill = "lightgray", stroke = 0.2)  +
   scale_y_continuous(expand = expansion(mult = c(0.05, 0.12))) + 
 
   # Layer 4: Labels & theme customization
   labs(
-    title = "Effect of Preservation Treatment on Egg Diameter",
-    subtitle = "Red diamonds represent model-estimated marginal means",
+    #title = "Effect of Preservation Treatment on Egg Diameter",
+    #subtitle = "Red diamonds represent model-estimated marginal means",
     x = "Treatment Group",
     y = "Egg Diameter (mm)",
     # color = "Individual ID (Block)"
@@ -640,12 +640,16 @@ geom_jitter(aes(color = as.factor(treatment)), alpha = 0.2, width = 0.2, size = 
     legend.position = "none",
     axis.text.x = element_text(face = "bold"),
     axis.text.y = element_text(face = "bold"),
-    axis.title = element_text(face = "bold")
-  )
+    axis.title = element_text(face = "bold"),
+  ) +
+  scale_x_discrete(labels = c("Formalin10" = "Formalin (10%)", "EtOH95" = "Ethanol (95%)", "EtOH80" = "Ethanol (80%)", "Iso70" = "  Isopropanol (70%)"))
+ggsave("fig1.svg", plot = fig1, width = 6, height = 4, dpi = 300)
+fig1
+```
+
 
 :::{.callout-note}
 The R package `{ggokabeito}` uses the well-known accessible palette 'Okabe-Ito'. By default, it uses colors in the regular order of the palette, but you can explicitly tell R which colors to use if you want to.
 
 To preview what hex codes would look like, you can use `show_col()` from the R package `{scales}`.
 :::
-

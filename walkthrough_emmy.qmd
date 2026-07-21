@@ -527,8 +527,9 @@ ggplot(aes(x = treatment, y = egg_diameter_mm)) +
   
   # Layer 1: Individual eggs colored by treatment
   geom_jitter(aes(color = as.factor(treatment)), alpha = 0.2, width = 0.2, size = 1) +
-  scale_color_manual(values = c("Formalin10" = "#ffb000", "Iso70" = "#dc267f", "EtOH95" = "#785ef0", "EtOH80" = "#fe6100")) + 
-  
+  # scale_color_manual(values = c("Formalin10" = "#ffb000", "Iso70" = "#dc267f", "EtOH95" = "#785ef0", "EtOH80" = "#fe6100")) + 
+    scale_color_manual(values = c("Formalin10" = "#FF837A", "Iso70" = "#82D69A", "EtOH95" = "#73B2FF", "EtOH80" = "#FFC66D")) + 
+
   # Layer 2: Boxplots
   geom_boxplot(alpha = 0.5, 
                outlier.shape = NA, 
@@ -562,8 +563,8 @@ ggplot(aes(x = treatment, y = egg_diameter_mm)) +
 
 
 ```{r}
-#| eval: false
-#| include: false
+#| eval: true
+#| include: true
 
 # THIS IS UNFINISHED
 library(multcomp)
@@ -579,8 +580,8 @@ letters_df$.group <- trimws(letters_df$.group)
 ```
 
 ```{r}
-#| eval: false
-#| include: false
+#| eval: true
+#| include: true
 # Calculate each group's max.
 # -- This makes it so you can plot a "floating" letter instead of static.
 group_max <- df_sub %>%
@@ -593,10 +594,10 @@ letters_df <- left_join(letters_df, group_max, by = "treatment")
 
 
 ```{r}
-#| eval: false
-#| include: false
+#| eval: true
+#| include: true
 library(ggplot2)
-library(ggokabeito)
+# library(ggokabeito)
 
 # 5. Plot raw data boxplots with overlaid Tukey letters
 fig1 <- df_sub %>%
@@ -605,7 +606,9 @@ fig1 <- df_sub %>%
 ggplot(aes(x = treatment, y = egg_diameter_mm)) +
   
 geom_jitter(aes(color = as.factor(treatment)), alpha = 0.5, width = 0.2, size = 1) +
-  scale_color_manual(values = c("Formalin10" = "#ffb000", "Iso70" = "#dc267f", "EtOH95" = "#785ef0", "EtOH80" = "#fe6100")) +
+ # scale_color_manual(values = c("Formalin10" = "#ffb000", "Iso70" = "#dc267f", "EtOH95" = "#785ef0", "EtOH80" = "#fe6100")) +
+  scale_color_manual(values = c("Formalin10" = "#FF837A", "Iso70" = "#82D69A", "EtOH95" = "#73B2FF", "EtOH80" = "#FFC66D")) + 
+
 # ggplot(df_sub, aes(x = treatment, y = egg_diameter_mm)) +
   geom_boxplot(alpha = 0.2, 
                outlier.shape = NA, 
@@ -642,7 +645,9 @@ geom_jitter(aes(color = as.factor(treatment)), alpha = 0.5, width = 0.2, size = 
     axis.text.y = element_text(face = "bold"),
     axis.title = element_text(face = "bold"),
   ) +
-  scale_x_discrete(labels = c("Formalin10" = "Formalin (10%)", "EtOH95" = "Ethanol (95%)", "EtOH80" = "Ethanol (80%)", "Iso70" = "  Isopropanol (70%)"))
+  scale_x_discrete(labels = c("Formalin10" = "Formalin (10%)", "EtOH95" = "Ethanol (95%)", "EtOH80" = "Ethanol (80%)", "Iso70" = "Isopropanol (70%)"))
+
+fig1
 ggsave("fig1.svg", plot = fig1, width = 6, height = 4, dpi = 300)
 fig1
 ```
